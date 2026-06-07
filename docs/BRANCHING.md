@@ -131,10 +131,14 @@ git push
 
 ## Protect `main` (GitHub settings)
 
-Repo → **Settings → Branches → Add rule** on `main`:
+**Private repo on Free plan:** rules show **Not enforced** — you must make the repo **public** first. Full steps: [GITHUB_SETUP.md](GITHUB_SETUP.md)
+
+Repo → **Settings → Branches → Add classic branch protection rule** on `main`:
 
 - Require a pull request before merging
-- Require 1 approval
+- Required approvals: **1**
+
+After going public, confirm the rule says **Enforced**, not “Not enforced”.
 
 ---
 

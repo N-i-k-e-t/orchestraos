@@ -30,11 +30,18 @@ Onboard Rutuja and Ayush (Antigravity) and Niket (Cursor) on the same repo and G
 
 ---
 
-## Step 1 — GitHub access (done)
+## Step 1 — GitHub: public repo + protect `main`
 
-Collaborators Rutuja and Ayush are added.
+**Important:** On GitHub **Free**, branch protection is **not enforced on private repos** (you will see “Not enforced” next to `main`). Make the repo **public** so your existing rule actually works — see **[GITHUB_SETUP.md](GITHUB_SETUP.md)** for the full walkthrough and security notes.
 
-**Still do once:** Settings → Branches → Add rule on `main` → require PR + 1 approval.
+Summary:
+
+1. **Settings → General → Danger Zone → Make public** (only collaborators can push; public can read only)
+2. Refresh **Settings → Branches** — `main` should show **Enforced**
+3. Confirm rule: require PR + **1 approval** on `main`
+4. **Settings → Collaborators** — only Niket, Rutuja, Ayush (Write access)
+
+Collaborators Rutuja and Ayush are already added.
 
 ---
 
