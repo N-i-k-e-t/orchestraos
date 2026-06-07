@@ -12,6 +12,7 @@ poetry.toml
 .env
 .env.*
 !.env.example
+TEAM_SECRETS_SHARE.md
 
 # Node / dashboard
 dashboard/node_modules/

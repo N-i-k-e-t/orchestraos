@@ -211,6 +211,8 @@ orchestraos/
 | Branching (ready-made branches) | [docs/BRANCHING.md](docs/BRANCHING.md) |
 | GitHub public + branch protection | [docs/GITHUB_SETUP.md](docs/GITHUB_SETUP.md) |
 | Team checkpoint | [docs/CHECKPOINT.md](docs/CHECKPOINT.md) |
+| Secrets guide (safe) | [docs/SECRETS_LOCAL.md](docs/SECRETS_LOCAL.md) |
+| Private key sheet template | [docs/setup/SECRETS_SHARE.template.md](docs/setup/SECRETS_SHARE.template.md) |
 | Rutuja setup | [docs/setup/RUTUJA_SETUP.md](docs/setup/RUTUJA_SETUP.md) |
 | Rutuja Antigravity prompt | [docs/setup/ANTIGRAVITY_PROMPT_RUTUJA.md](docs/setup/ANTIGRAVITY_PROMPT_RUTUJA.md) |
 | Ayush setup | [docs/setup/AYUSH_SETUP.md](docs/setup/AYUSH_SETUP.md) |

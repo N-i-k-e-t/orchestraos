@@ -25,6 +25,8 @@ Onboard Rutuja and Ayush (Antigravity) and Niket (Cursor) on the same repo and G
 
 **Full project status:** [CHECKPOINT.md](CHECKPOINT.md)
 
+**Secrets:** Public guide [SECRETS_LOCAL.md](SECRETS_LOCAL.md). Niket shares filled [setup/SECRETS_SHARE.template.md](setup/SECRETS_SHARE.template.md) via Slack/WhatsApp only — never GitHub.
+
 ---
 
 ## Ready-made branches (already on GitHub)

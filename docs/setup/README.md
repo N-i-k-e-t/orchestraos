@@ -13,4 +13,6 @@ Pick your guide:
 
 **Project status:** [CHECKPOINT.md](../CHECKPOINT.md)
 
+**Secrets:** [SECRETS_LOCAL.md](../SECRETS_LOCAL.md) (on GitHub, no values). Niket shares filled [SECRETS_SHARE.template.md](SECRETS_SHARE.template.md) via **Slack/WhatsApp only**.
+
 Each person: accept GitHub invite → clone their branch → paste Antigravity prompt → confirm 79 tests pass.
