@@ -4,55 +4,79 @@ Onboard Rutuja and Ayush (Antigravity) and Niket (Cursor) on the same repo and G
 
 ## At a glance
 
-| Who | IDE | Clone | GCP |
-|-----|-----|-------|-----|
-| Niket | Cursor | Already local | `slimy-497412` |
-| Rutuja | Antigravity | `git clone` | Same project |
-| Ayush | Antigravity | `git clone` | Same project |
+| Who | IDE | Branch | GCP |
+|-----|-----|--------|-----|
+| Niket | Cursor | `niket/backbone` | `slimy-497412` |
+| Rutuja | Antigravity | `rutuja/monitor` | Same project |
+| Ayush | Antigravity | `ayush/dashboard` | Same project |
 
-**Live dashboard (status board):** https://orchestraos-dashboard-397417416325.us-central1.run.app
+**Repo:** https://github.com/N-i-k-e-t/orchestraos
+
+**Live dashboard:** Currently unreachable (Cloud Run timeout). Use **local dashboard** until Ayush redeploys — see [Live status dashboard](#live-status-dashboard) below.
+
+**Full branching guide:** [BRANCHING.md](BRANCHING.md)
 
 ---
 
-## Step 1 — Push repo (Niket, one time)
+## Ready-made branches (already on GitHub)
 
-Replace `<your-org>` with your GitHub org or username.
+| Branch | Owner |
+|--------|-------|
+| `main` | Protected demo-ready |
+| `dev` | Shared integration |
+| `niket/backbone` | Niket |
+| `rutuja/monitor` | Rutuja |
+| `ayush/dashboard` | Ayush |
+
+---
+
+## Step 1 — GitHub access (done)
+
+Collaborators Rutuja and Ayush are added.
+
+**Still do once:** Settings → Branches → Add rule on `main` → require PR + 1 approval.
+
+---
+
+## Step 2 — One command setup per person
+
+PowerShell uses **`;`** not **`&&`**.
+
+### Rutuja
 
 ```powershell
-cd c:\Users\niket\Downloads\os-rapid
-git init
-git add .
-git commit -m "chore: OrchestraOS backbone — phases 1-10 complete, 79 tests passing"
-git branch -M main
-git checkout -b dev
-git remote add origin https://github.com/N-i-k-e-t/orchestraos.git
-git push -u origin main
-git push -u origin dev
+git clone https://github.com/N-i-k-e-t/orchestraos.git ; cd orchestraos ; git checkout rutuja/monitor ; poetry install ; cd dashboard ; npm install ; cd .. ; copy .env.example .env
 ```
 
-## Step 2 — GitHub access
+### Ayush
 
-1. Repo → **Settings → Collaborators** → invite Rutuja and Ayush.
-2. **Settings → Branches → Add rule** on `main`:
-   - Require pull request
-   - Require 1 approval
-   - (Optional) Require status checks when CI is added
-
-## Step 3 — Branching
-
-Everyone branches from `dev`:
-
-```
-main → dev → niket/* | rutuja/* | ayush/*
+```powershell
+git clone https://github.com/N-i-k-e-t/orchestraos.git ; cd orchestraos ; git checkout ayush/dashboard ; poetry install ; cd dashboard ; npm install ; cd .. ; copy .env.example .env
 ```
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full workflow.
+### Niket (already cloned)
+
+```powershell
+cd c:\Users\niket\Downloads\os-rapid ; git fetch origin ; git checkout niket/backbone
+```
+
+---
+
+## Step 3 — Connect to GCP (each person, once)
+
+```powershell
+gcloud auth login ; gcloud auth application-default login ; gcloud config set project slimy-497412
+```
+
+Secrets load from Secret Manager in prod via `shared/config.py`. Never commit `.env`.
+
+See [GCP_SETUP.md](GCP_SETUP.md) for secret names and IAM.
 
 ---
 
 ## Antigravity onboarding prompt
 
-Paste into **Google Antigravity** (replace `<your-org>` and branch name):
+Paste into **Google Antigravity** (Rutuja uses `rutuja/monitor`, Ayush uses `ayush/dashboard`):
 
 ```text
 EXECUTION MODE — set up OrchestraOS locally and connect to GCP. Do not change architecture.
@@ -60,9 +84,7 @@ EXECUTION MODE — set up OrchestraOS locally and connect to GCP. Do not change 
 1. Clone and install:
    git clone https://github.com/N-i-k-e-t/orchestraos.git
    cd orchestraos
-   git checkout dev
-   git pull origin dev
-   git checkout -b rutuja/my-feature
+   git checkout rutuja/monitor
    poetry install
    cd dashboard
    npm install
@@ -81,40 +103,35 @@ EXECUTION MODE — set up OrchestraOS locally and connect to GCP. Do not change 
    gcloud config set project slimy-497412
 
 4. Verify:
-   docker compose up --build
    poetry run pytest tests/ -v
    poetry run orchestraos-demo
 
 Report: branch name, GCP project, test count. Then stop.
 ```
 
-Ayush should use branch prefix `ayush/` (e.g. `ayush/vpc-connector-fix`).
+---
+
+## Daily workflow
+
+```powershell
+git checkout dev ; git pull origin dev
+git checkout <your-branch> ; git merge dev
+git add . ; git commit -m "feat: description" ; git push
+```
+
+Open PR → **`dev`** on GitHub. See [BRANCHING.md](BRANCHING.md).
 
 ---
 
 ## Cursor onboarding (Niket)
 
-Already on the codebase. Before each session:
+Before each session:
 
 ```powershell
-git checkout dev
-git pull origin dev
-git checkout -b niket/my-feature
+git checkout dev ; git pull origin dev
+git checkout niket/backbone ; git merge dev
 .\scripts\verify_local.ps1
 ```
-
----
-
-## Shared config (no keys in git)
-
-| Local dev | Production |
-|-----------|------------|
-| `.env` (gitignored) | GCP Secret Manager |
-| `shared/config.py` reads both | Same code paths |
-
-Niket runs secret setup once — see [GCP_SETUP.md](GCP_SETUP.md).
-
-Teammates with `roles/secretmanager.secretAccessor` on project `slimy-497412` can read secrets after `gcloud auth application-default login`.
 
 ---
 
@@ -122,25 +139,33 @@ Teammates with `roles/secretmanager.secretAccessor` on project `slimy-497412` ca
 
 | Task | Owner |
 |------|-------|
-| Retry VPC connector + full Cloud Run deploy | Ayush |
+| Fix Cloud Run dashboard (redeploy + public access) | Ayush |
+| Retry VPC connector + full stack deploy | Ayush |
 | Gemini API key in Secret Manager | Niket or Rutuja |
-| Video + screenshots for submission | Anyone |
+| Video + screenshots | Anyone |
 | PR reviews on `dev` | Rotate — author cannot approve own PR |
 
 ---
 
 ## Live status dashboard
 
-After deploy, the dashboard shows:
-
-- **Demo** — two-pane AutoGPT comparison (`dashboard/src/pages/DemoPage.tsx`)
-- **Incidents** — loop / breaker / recovery entries
-- **Metrics** — cost saved summary
-
-Open the live URL above or run locally:
+Cloud Run URL is currently **not loading** (timeout). For demos and dev:
 
 ```powershell
 poetry run orchestraos-dashboard
 ```
 
-Then visit http://localhost:8080
+Open http://localhost:8080 — Demo, Incidents, and Metrics pages work locally.
+
+After Ayush redeploys, update `configs/gcp.yaml` → `live_dashboard_url` and this doc.
+
+---
+
+## Shared config
+
+| Local dev | Production |
+|-----------|------------|
+| `.env` (gitignored) | GCP Secret Manager |
+| `shared/config.py` | Same code paths |
+
+Niket runs secret setup once — see [GCP_SETUP.md](GCP_SETUP.md).

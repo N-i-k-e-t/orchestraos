@@ -208,14 +208,15 @@ orchestraos/
 | Asset | Location |
 |-------|----------|
 | Team onboarding | [docs/TEAM_SETUP.md](docs/TEAM_SETUP.md) |
+| Branching (ready-made branches) | [docs/BRANCHING.md](docs/BRANCHING.md) |
 | GCP shared project | [docs/GCP_SETUP.md](docs/GCP_SETUP.md) |
-| Contributing / branching | [CONTRIBUTING.md](CONTRIBUTING.md) |
+| Contributing / PR rules | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Demo video script (3 min) | [docs/VIDEO_SCRIPT.md](docs/VIDEO_SCRIPT.md) |
 | Submission checklist | [docs/SUBMISSION.md](docs/SUBMISSION.md) |
 | Screenshot guide | [docs/screenshots/README.md](docs/screenshots/README.md) |
 | Architecture deep-dive | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 
-**Live demo URL:** https://orchestraos-dashboard-397417416325.us-central1.run.app
+**Live demo URL:** https://orchestraos-dashboard-397417416325.us-central1.run.app _(currently unreachable — use `poetry run orchestraos-dashboard` locally until redeploy)_
 
 **Video URL:** _add YouTube/Loom link_
 

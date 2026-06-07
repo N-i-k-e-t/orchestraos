@@ -17,23 +17,25 @@ Touch files outside your lane only for shared schemas (`shared/schemas.py`), con
 ```
 main          ← always deployable; protected
   └── dev     ← integration branch; all feature PRs target dev first
-        ├── niket/collector-arize
-        ├── rutuja/gemini-risk-agent
-        └── ayush/dashboard-cloudrun
+        ├── niket/backbone      ← Niket (ready-made)
+        ├── rutuja/monitor      ← Rutuja (ready-made)
+        └── ayush/dashboard     ← Ayush (ready-made)
 ```
+
+Full guide: [docs/BRANCHING.md](docs/BRANCHING.md)
 
 ### Standard workflow
 
 ```bash
 git checkout dev
 git pull origin dev
-git checkout -b rutuja/gemini-risk-agent
+git checkout rutuja/monitor   # your ready-made branch
 
 # ... edit, test ...
 
 git add .
 git commit -m "feat: wire Gemini Flash into RiskAgent"
-git push -u origin rutuja/gemini-risk-agent
+git push origin rutuja/monitor
 ```
 
 Open a **Pull Request → `dev`**. After review and green tests, merge to `dev`. When the demo is stable, open **`dev` → `main`**.
@@ -43,10 +45,10 @@ PowerShell equivalent:
 ```powershell
 git checkout dev
 git pull origin dev
-git checkout -b ayush/dashboard-cloudrun
+git checkout ayush/dashboard
 git add .
 git commit -m "feat: polish demo page layout"
-git push -u origin ayush/dashboard-cloudrun
+git push origin ayush/dashboard
 ```
 
 ## Commit message style
@@ -97,7 +99,7 @@ Or one command:
 
 ## Getting started
 
-New teammates: read [docs/TEAM_SETUP.md](docs/TEAM_SETUP.md) and [docs/GCP_SETUP.md](docs/GCP_SETUP.md).
+New teammates: read [docs/BRANCHING.md](docs/BRANCHING.md), [docs/TEAM_SETUP.md](docs/TEAM_SETUP.md), and [docs/GCP_SETUP.md](docs/GCP_SETUP.md).
 
 ## Questions
 
