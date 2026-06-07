@@ -1,0 +1,8 @@
+{
+  "scenario": "cursor",
+  "title": "Cursor Agent Tool Loop",
+  "live": false,
+  "description": "Static replay — repeated file read with no state change.",
+  "unprotected": { "calls": 85, "duration_min": 6, "cost_usd": 9.1, "outcome": "FAILURE" },
+  "protected": { "calls": 4, "duration_sec": 28, "cost_usd": 0.25, "outcome": "RECOVERED" }
+}

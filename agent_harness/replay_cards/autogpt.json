@@ -1,0 +1,18 @@
+{
+  "scenario": "autogpt",
+  "title": "AutoGPT Infinite Loop",
+  "live": true,
+  "description": "Agent repeatedly calls web_search with identical params. OrchestraOS detects loop on call 3, trips breaker, remediates.",
+  "unprotected": {
+    "calls": 400,
+    "duration_min": 20,
+    "cost_usd": 42.0,
+    "outcome": "FAILURE"
+  },
+  "protected": {
+    "calls": 5,
+    "duration_sec": 47,
+    "cost_usd": 0.36,
+    "outcome": "RECOVERED"
+  }
+}

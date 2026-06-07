@@ -1,0 +1,8 @@
+{
+  "scenario": "replit",
+  "title": "Replit Agent Stall",
+  "live": false,
+  "description": "Static replay — agent stalls on deploy retry loop.",
+  "unprotected": { "calls": 120, "duration_min": 8, "cost_usd": 12.5, "outcome": "FAILURE" },
+  "protected": { "calls": 4, "duration_sec": 32, "cost_usd": 0.28, "outcome": "RECOVERED" }
+}

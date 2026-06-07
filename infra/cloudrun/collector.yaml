@@ -1,0 +1,48 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: orchestraos-collector
+  labels:
+    app: orchestraos
+    component: collector
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "5"
+        run.googleapis.com/vpc-access-connector: ${VPC_CONNECTOR}
+        run.googleapis.com/vpc-access-egress: private-ranges-only
+    spec:
+      serviceAccountName: ${SA_EMAIL}
+      containers:
+        - image: ${IMAGE}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: GOOGLE_CLOUD_PROJECT
+              value: ${GCP_PROJECT}
+            - name: OTEL_SERVICE_NAME
+              value: orchestraos-collector
+            - name: PARTNER_ARIZE_ENABLED
+              value: "true"
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: redis-url
+                  key: latest
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gemini-api-key
+                  key: latest
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          command:
+            - python
+            - -m
+            - collector.main

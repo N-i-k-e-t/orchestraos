@@ -1,0 +1,50 @@
+# Worker template — internal-only Cloud Run service with min-instances=1.
+# Copy and set metadata.name + container image/command for each worker.
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: ${SERVICE_NAME}
+  labels:
+    app: orchestraos
+    component: worker
+  annotations:
+    run.googleapis.com/ingress: internal
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "3"
+        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/vpc-access-connector: ${VPC_CONNECTOR}
+        run.googleapis.com/vpc-access-egress: private-ranges-only
+    spec:
+      serviceAccountName: ${SA_EMAIL}
+      containers:
+        - image: ${IMAGE}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: GOOGLE_CLOUD_PROJECT
+              value: ${GCP_PROJECT}
+            - name: PORT
+              value: "8080"
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: redis-url
+                  key: latest
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gemini-api-key
+                  key: latest
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          command:
+            - python
+            - -m
+            - ${MODULE}

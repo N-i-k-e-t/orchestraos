@@ -1,0 +1,63 @@
+[tool.poetry]
+name = "orchestraos"
+version = "0.1.0"
+description = "Runtime protection and observability for AI agent workflows"
+authors = ["OrchestraOS Contributors"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "collector" },
+    { include = "detectors" },
+    { include = "monitor_model" },
+    { include = "breaker" },
+    { include = "checkpoint" },
+    { include = "remediation" },
+    { include = "agent_harness" },
+    { include = "integrations" },
+    { include = "shared" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.0"
+uvicorn = { extras = ["standard"], version = "^0.32.0" }
+pydantic = "^2.9.0"
+redis = "^5.2.0"
+motor = "^3.6.0"
+pymongo = "^4.10.0"
+google-cloud-pubsub = "^2.27.0"
+google-cloud-secret-manager = "^2.21.0"
+google-cloud-logging = "^3.11.0"
+google-cloud-storage = "^2.18.0"
+google-cloud-aiplatform = "^1.71.0"
+google-generativeai = "^0.8.0"
+opentelemetry-api = "^1.28.0"
+opentelemetry-sdk = "^1.28.0"
+opentelemetry-exporter-otlp = "^1.28.0"
+pyyaml = "^6.0.2"
+httpx = "^0.27.0"
+numpy = "^2.1.0"
+pandas = "^2.2.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+pytest-asyncio = "^0.24.0"
+httpx = "^0.27.0"
+
+[tool.poetry.scripts]
+orchestraos-collector = "collector.main:main"
+orchestraos-detectors = "detectors.worker:main"
+orchestraos-monitor = "monitor_model.worker:main"
+orchestraos-breaker = "breaker.worker:main"
+orchestraos-remediation = "remediation.worker:main"
+orchestraos-demo = "agent_harness.run_demo:main"
+orchestraos-dashboard = "dashboard.server:main"
+orchestraos-partners = "integrations.worker:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

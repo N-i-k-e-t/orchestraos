@@ -1,0 +1,38 @@
+# Cloud Run service definitions (reference)
+#
+# Prefer `scripts/deploy_cloud_run.sh` for deployment — it handles secrets and IAM.
+# These YAMLs can be applied with envsubst:
+#
+#   export GCP_PROJECT=... IMAGE=... SA_EMAIL=...
+#   envsubst < infra/cloudrun/dashboard.yaml | gcloud run services replace -
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: orchestraos-dashboard
+  labels:
+    app: orchestraos
+    component: dashboard
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "3"
+    spec:
+      serviceAccountName: ${SA_EMAIL}
+      containers:
+        - image: ${IMAGE}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: GOOGLE_CLOUD_PROJECT
+              value: ${GCP_PROJECT}
+            - name: GEMINI_MODEL
+              value: gemini-2.0-flash
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi

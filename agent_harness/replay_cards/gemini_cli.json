@@ -1,0 +1,8 @@
+{
+  "scenario": "gemini_cli",
+  "title": "Gemini CLI Retry Loop",
+  "live": false,
+  "description": "Static replay — CLI agent retries failed API call indefinitely.",
+  "unprotected": { "calls": 200, "duration_min": 12, "cost_usd": 18.0, "outcome": "FAILURE" },
+  "protected": { "calls": 5, "duration_sec": 41, "cost_usd": 0.34, "outcome": "RECOVERED" }
+}

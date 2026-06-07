@@ -1,0 +1,65 @@
+# GCP deployment settings — shared hackathon project (all teammates).
+project_id: slimy-497412
+region: us-central1
+artifact_registry_repo: orchestraos
+
+# Live URLs (update after redeploy)
+live_dashboard_url: https://orchestraos-dashboard-397417416325.us-central1.run.app
+
+# Cloud Run service names
+services:
+  collector: orchestraos-collector
+  dashboard: orchestraos-dashboard
+  detectors: orchestraos-detectors
+  monitor: orchestraos-monitor
+  breaker: orchestraos-breaker
+  remediation: orchestraos-remediation
+  partners: orchestraos-partners
+
+# Pub/Sub (must match shared/config.py defaults)
+pubsub:
+  topics:
+    - raw-spans
+    - feature-vectors
+    - risk-assessments
+    - breaker-events
+    - remediation-plans
+  subscriptions:
+    - name: raw-spans-sub
+      topic: raw-spans
+    - name: feature-vectors-sub
+      topic: feature-vectors
+    - name: risk-assessments-sub
+      topic: risk-assessments
+    - name: breaker-events-sub
+      topic: breaker-events
+    - name: remediation-plans-sub
+      topic: remediation-plans
+    - name: partners-breaker-sub
+      topic: breaker-events
+    - name: partners-remediation-sub
+      topic: remediation-plans
+
+# Secret Manager secret IDs (created by scripts/setup_gcp.sh)
+secrets:
+  - redis-url
+  - gemini-api-key
+  - mongodb-uri
+  - phoenix-endpoint
+  - elastic-url
+  - elastic-api-key
+  - dynatrace-url
+  - dynatrace-token
+  - gitlab-token
+  - gitlab-project-id
+
+# Memorystore + VPC connector (optional — see docs/DEPLOY.md)
+memorystore:
+  instance_name: orchestraos-redis
+  tier: BASIC
+  size_gb: 1
+vpc_connector:
+  name: orchestraos-connector
+  range: 10.8.0.0/28
+
+service_account: orchestraos-runtime

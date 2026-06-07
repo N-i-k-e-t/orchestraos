@@ -1,0 +1,171 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis_data:/data
+
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085 --project=orchestraos-local
+    ports:
+      - "8085:8085"
+
+  collector:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.collector
+    ports:
+      - "4318:4318"
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      GOOGLE_CLOUD_PROJECT: orchestraos-local
+      PUBSUB_TOPIC_RAW_SPANS: raw-spans
+      OTEL_SERVICE_NAME: orchestraos-collector
+      COLLECTOR_HOST: 0.0.0.0
+      COLLECTOR_PORT: "4318"
+    depends_on:
+      redis:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4318/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  detectors:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.detectors
+    environment:
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      GOOGLE_CLOUD_PROJECT: orchestraos-local
+      PUBSUB_TOPIC_RAW_SPANS: raw-spans
+      PUBSUB_TOPIC_FEATURE_VECTORS: feature-vectors
+      PUBSUB_SUBSCRIPTION_RAW_SPANS: raw-spans-sub
+    depends_on:
+      pubsub-emulator:
+        condition: service_started
+      collector:
+        condition: service_healthy
+
+  monitor:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.monitor
+    environment:
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      GOOGLE_CLOUD_PROJECT: orchestraos-local
+      PUBSUB_TOPIC_FEATURE_VECTORS: feature-vectors
+      PUBSUB_TOPIC_RISK_ASSESSMENTS: risk-assessments
+      PUBSUB_SUBSCRIPTION_FEATURE_VECTORS: feature-vectors-sub
+      GEMINI_MODEL: gemini-2.0-flash
+    depends_on:
+      pubsub-emulator:
+        condition: service_started
+      detectors:
+        condition: service_started
+
+  breaker:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.breaker
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      GOOGLE_CLOUD_PROJECT: orchestraos-local
+      PUBSUB_TOPIC_RISK_ASSESSMENTS: risk-assessments
+      PUBSUB_TOPIC_BREAKER_EVENTS: breaker-events
+      PUBSUB_SUBSCRIPTION_RISK_ASSESSMENTS: risk-assessments-sub
+      BREAKER_RISK_THRESHOLD: "0.8"
+      BREAKER_COOLDOWN_SEC: "30"
+    depends_on:
+      redis:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+      monitor:
+        condition: service_started
+
+  remediation:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.remediation
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      GOOGLE_CLOUD_PROJECT: orchestraos-local
+      PUBSUB_TOPIC_BREAKER_EVENTS: breaker-events
+      PUBSUB_TOPIC_REMEDIATION_PLANS: remediation-plans
+      PUBSUB_SUBSCRIPTION_BREAKER_EVENTS: breaker-events-sub
+      PUBSUB_SUBSCRIPTION_REMEDIATION_PLANS: remediation-plans-sub
+    depends_on:
+      redis:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+      breaker:
+        condition: service_started
+
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  partners:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.partners
+    environment:
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      GOOGLE_CLOUD_PROJECT: orchestraos-local
+      PUBSUB_TOPIC_BREAKER_EVENTS: breaker-events
+      PUBSUB_TOPIC_REMEDIATION_PLANS: remediation-plans
+      PUBSUB_SUBSCRIPTION_PARTNERS_BREAKER: partners-breaker-sub
+      PUBSUB_SUBSCRIPTION_PARTNERS_REMEDIATION: partners-remediation-sub
+      PARTNER_MONGODB_ENABLED: "true"
+      MONGODB_URI: mongodb://mongodb:27017
+      PARTNER_ARIZE_ENABLED: "false"
+      PARTNER_ELASTIC_ENABLED: "false"
+      PARTNER_DYNATRACE_ENABLED: "false"
+      PARTNER_GITLAB_ENABLED: "false"
+    depends_on:
+      pubsub-emulator:
+        condition: service_started
+      remediation:
+        condition: service_started
+      mongodb:
+        condition: service_healthy
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.dashboard
+    ports:
+      - "8080:8080"
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      breaker:
+        condition: service_started
+
+volumes:
+  redis_data:
+  mongo_data:

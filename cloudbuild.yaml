@@ -1,0 +1,126 @@
+# Cloud Build — build and push all OrchestraOS images to Artifact Registry.
+#
+# Trigger manually:
+#   gcloud builds submit --config=cloudbuild.yaml
+#
+# Uses ${BUILD_ID} for immutable tags and :latest for deploy (see deploy_cloud_run.ps1).
+
+substitutions:
+  _REGION: us-central1
+  _REPO: orchestraos
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  - id: build-collector
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - infra/Dockerfile.collector
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/collector:${BUILD_ID}
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/collector:latest
+      - .
+
+  - id: build-detectors
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - infra/Dockerfile.detectors
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/detectors:${BUILD_ID}
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/detectors:latest
+      - .
+
+  - id: build-monitor
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - infra/Dockerfile.monitor
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/monitor:${BUILD_ID}
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/monitor:latest
+      - .
+
+  - id: build-breaker
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - infra/Dockerfile.breaker
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/breaker:${BUILD_ID}
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/breaker:latest
+      - .
+
+  - id: build-remediation
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - infra/Dockerfile.remediation
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/remediation:${BUILD_ID}
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/remediation:latest
+      - .
+
+  - id: build-partners
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - infra/Dockerfile.partners
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/partners:${BUILD_ID}
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/partners:latest
+      - .
+
+  - id: build-dashboard
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - infra/Dockerfile.dashboard
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/dashboard:${BUILD_ID}
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/dashboard:latest
+      - .
+
+  - id: push-all
+    name: gcr.io/cloud-builders/docker
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        for svc in collector detectors monitor breaker remediation partners dashboard; do
+          docker push ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/$$svc:${BUILD_ID}
+          docker push ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/$$svc:latest
+        done
+    waitFor:
+      - build-collector
+      - build-detectors
+      - build-monitor
+      - build-breaker
+      - build-remediation
+      - build-partners
+      - build-dashboard
+
+images:
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/collector:${BUILD_ID}
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/detectors:${BUILD_ID}
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/monitor:${BUILD_ID}
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/breaker:${BUILD_ID}
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/remediation:${BUILD_ID}
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/partners:${BUILD_ID}
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/dashboard:${BUILD_ID}

@@ -1,0 +1,41 @@
+# OrchestraOS partner integration toggles (local dev — override via env)
+#
+# Enable with: PARTNER_<NAME>_ENABLED=true
+# Credentials via env or GCP Secret Manager (see .env.example)
+
+partners:
+  arize:
+    enabled: false
+    endpoint_env: PHOENIX_COLLECTOR_ENDPOINT
+    description: Arize Phoenix OTLP trace export from collector + spans
+
+  mongodb:
+    enabled: false
+    uri_env: MONGODB_URI
+    database: orchestraos
+    collection: incidents
+    description: Persist breaker trips and remediation plans as incidents
+
+  elastic:
+    enabled: false
+    url_env: ELASTIC_URL
+    api_key_env: ELASTIC_API_KEY
+    index: orchestraos-events
+    description: Ship breaker and remediation events to Elasticsearch
+
+  dynatrace:
+    enabled: false
+    url_env: DYNATRACE_URL
+    token_env: DYNATRACE_API_TOKEN
+    description: Custom APM events for breaker trips and remediation
+
+  gitlab:
+    enabled: false
+    url_env: GITLAB_URL
+    token_env: GITLAB_TOKEN
+    project_id_env: GITLAB_PROJECT_ID
+    description: Create issues when remediation escalates to a human
+
+pubsub:
+  breaker_subscription: partners-breaker-sub
+  remediation_subscription: partners-remediation-sub
