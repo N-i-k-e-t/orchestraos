@@ -20,8 +20,10 @@ Onboard Rutuja and Ayush (Antigravity) and Niket (Cursor) on the same repo and G
 
 | Person | Guide |
 |--------|-------|
-| Rutuja | [setup/RUTUJA_SETUP.md](setup/RUTUJA_SETUP.md) |
-| Ayush | [setup/AYUSH_SETUP.md](setup/AYUSH_SETUP.md) |
+| Rutuja | [setup/RUTUJA_SETUP.md](setup/RUTUJA_SETUP.md) · [Antigravity prompt](setup/ANTIGRAVITY_PROMPT_RUTUJA.md) |
+| Ayush | [setup/AYUSH_SETUP.md](setup/AYUSH_SETUP.md) · [Antigravity prompt](setup/ANTIGRAVITY_PROMPT_AYUSH.md) |
+
+**Full project status:** [CHECKPOINT.md](CHECKPOINT.md)
 
 ---
 
@@ -90,7 +92,10 @@ See [GCP_SETUP.md](GCP_SETUP.md) for secret names and IAM.
 
 ## Antigravity onboarding prompt
 
-Paste into **Google Antigravity** (Rutuja uses `rutuja/monitor`, Ayush uses `ayush/dashboard`):
+**Rutuja** — copy entire prompt from [setup/ANTIGRAVITY_PROMPT_RUTUJA.md](setup/ANTIGRAVITY_PROMPT_RUTUJA.md)  
+**Ayush** — copy entire prompt from [setup/ANTIGRAVITY_PROMPT_AYUSH.md](setup/ANTIGRAVITY_PROMPT_AYUSH.md)
+
+Short version (Rutuja):
 
 ```text
 EXECUTION MODE — set up OrchestraOS locally and connect to GCP. Do not change architecture.

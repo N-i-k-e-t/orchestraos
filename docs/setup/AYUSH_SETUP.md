@@ -72,7 +72,9 @@ Open **http://localhost:8080** — Demo page should load.
 ## Step 4 — Open in Antigravity
 
 1. Open Antigravity → **Open folder** → select your `orchestraos` folder  
-2. Paste this prompt:
+2. Copy the **full prompt** from [ANTIGRAVITY_PROMPT_AYUSH.md](ANTIGRAVITY_PROMPT_AYUSH.md) and paste it into Antigravity chat
+
+Or paste this short confirm prompt:
 
 ```text
 I am Ayush on branch ayush/dashboard. Confirm pytest passes and dashboard builds.

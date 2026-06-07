@@ -67,7 +67,9 @@ poetry run orchestraos-demo
 ## Step 4 — Open in Antigravity
 
 1. Open Antigravity → **Open folder** → select your `orchestraos` folder  
-2. Paste this prompt to confirm setup:
+2. Copy the **full prompt** from [ANTIGRAVITY_PROMPT_RUTUJA.md](ANTIGRAVITY_PROMPT_RUTUJA.md) and paste it into Antigravity chat
+
+Or paste this short confirm prompt:
 
 ```text
 I am Rutuja on branch rutuja/monitor. Confirm poetry install works and pytest passes.
