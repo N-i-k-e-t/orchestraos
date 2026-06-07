@@ -170,4 +170,5 @@ Partner fan-out subscriptions: `partners-breaker-sub`, `partners-remediation-sub
 | Secret access denied | Add `secretAccessor` role for user |
 | PowerShell `&&` errors | Use `;` between commands |
 
-Full deploy guide: [DEPLOY.md](DEPLOY.md)
+Full deploy guide: [DEPLOY.md](DEPLOY.md)  
+Live keys & test scenarios: [LIVE_RESOURCES.md](LIVE_RESOURCES.md)

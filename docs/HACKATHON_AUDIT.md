@@ -89,3 +89,4 @@ curl http://localhost:4318/health
 ## Related
 
 - [SUBMISSION.md](SUBMISSION.md) · [VIDEO_SCRIPT.md](VIDEO_SCRIPT.md) · [ARCHITECTURE.md](ARCHITECTURE.md)
+- [LIVE_RESOURCES.md](LIVE_RESOURCES.md) — keys, auth, GCP config, real-world test scenarios

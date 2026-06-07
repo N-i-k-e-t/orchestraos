@@ -89,3 +89,4 @@ Then update `configs/gcp.yaml` → `live_dashboard_url` and README with the work
 | [BRANCHING.md](BRANCHING.md) | Daily git workflow |
 | [GITHUB_SETUP.md](GITHUB_SETUP.md) | Public repo + security |
 | [GCP_SETUP.md](GCP_SETUP.md) | Secrets + IAM |
+| [LIVE_RESOURCES.md](LIVE_RESOURCES.md) | Live keys, auth, test scenarios |

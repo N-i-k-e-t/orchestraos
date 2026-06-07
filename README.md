@@ -224,6 +224,7 @@ orchestraos/
 | Branching (ready-made branches) | [docs/BRANCHING.md](docs/BRANCHING.md) |
 | GitHub public + branch protection | [docs/GITHUB_SETUP.md](docs/GITHUB_SETUP.md) |
 | Hackathon audit checklist | [docs/HACKATHON_AUDIT.md](docs/HACKATHON_AUDIT.md) |
+| Live keys, auth & test scenarios | [docs/LIVE_RESOURCES.md](docs/LIVE_RESOURCES.md) |
 | Secrets guide (safe) | [docs/SECRETS_LOCAL.md](docs/SECRETS_LOCAL.md) |
 | Private key sheet template | [docs/setup/SECRETS_SHARE.template.md](docs/setup/SECRETS_SHARE.template.md) |
 | Rutuja setup | [docs/setup/RUTUJA_SETUP.md](docs/setup/RUTUJA_SETUP.md) |

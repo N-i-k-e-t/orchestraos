@@ -15,4 +15,6 @@ Pick your guide:
 
 **Secrets:** [SECRETS_LOCAL.md](../SECRETS_LOCAL.md) (on GitHub, no values). Niket shares filled [SECRETS_SHARE.template.md](SECRETS_SHARE.template.md) via **Slack/WhatsApp only**.
 
-Each person: accept GitHub invite → clone their branch → paste Antigravity prompt → confirm 79 tests pass.
+**Live resources:** [LIVE_RESOURCES.md](../LIVE_RESOURCES.md) — keys, auth, GCP config, test scenarios.
+
+Each person: accept GitHub invite → clone their branch → paste Antigravity prompt → confirm 83 tests pass.
