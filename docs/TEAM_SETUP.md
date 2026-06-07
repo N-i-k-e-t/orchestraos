@@ -25,7 +25,7 @@ git add .
 git commit -m "chore: OrchestraOS backbone — phases 1-10 complete, 79 tests passing"
 git branch -M main
 git checkout -b dev
-git remote add origin https://github.com/<your-org>/orchestraos.git
+git remote add origin https://github.com/N-i-k-e-t/orchestraos.git
 git push -u origin main
 git push -u origin dev
 ```
@@ -58,7 +58,7 @@ Paste into **Google Antigravity** (replace `<your-org>` and branch name):
 EXECUTION MODE — set up OrchestraOS locally and connect to GCP. Do not change architecture.
 
 1. Clone and install:
-   git clone https://github.com/<your-org>/orchestraos.git
+   git clone https://github.com/N-i-k-e-t/orchestraos.git
    cd orchestraos
    git checkout dev
    git pull origin dev

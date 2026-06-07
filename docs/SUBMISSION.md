@@ -31,7 +31,7 @@ Google Cloud Rapid Agent Hackathon — OrchestraOS Loop Sentinel
 Live demo:    https://orchestraos-dashboard-397417416325.us-central1.run.app
 Collector:    https://orchestraos-collector-XXXX.run.app/v1/traces  (deploy after Memorystore/VPC)
 Video:        https://youtube.com/watch?v=XXXX
-GitHub:       https://github.com/YOUR_ORG/orchestraos
+GitHub:       https://github.com/N-i-k-e-t/orchestraos
 ```
 
 Copy these into `README.md` under **Hackathon submission**.
