@@ -210,6 +210,8 @@ orchestraos/
 | Team onboarding | [docs/TEAM_SETUP.md](docs/TEAM_SETUP.md) |
 | Branching (ready-made branches) | [docs/BRANCHING.md](docs/BRANCHING.md) |
 | GitHub public + branch protection | [docs/GITHUB_SETUP.md](docs/GITHUB_SETUP.md) |
+| Rutuja setup | [docs/setup/RUTUJA_SETUP.md](docs/setup/RUTUJA_SETUP.md) |
+| Ayush setup | [docs/setup/AYUSH_SETUP.md](docs/setup/AYUSH_SETUP.md) |
 | GCP shared project | [docs/GCP_SETUP.md](docs/GCP_SETUP.md) |
 | Contributing / PR rules | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Demo video script (3 min) | [docs/VIDEO_SCRIPT.md](docs/VIDEO_SCRIPT.md) |

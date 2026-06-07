@@ -16,6 +16,13 @@ Onboard Rutuja and Ayush (Antigravity) and Niket (Cursor) on the same repo and G
 
 **Full branching guide:** [BRANCHING.md](BRANCHING.md)
 
+**Easy setup guides (share with teammates):**
+
+| Person | Guide |
+|--------|-------|
+| Rutuja | [setup/RUTUJA_SETUP.md](setup/RUTUJA_SETUP.md) |
+| Ayush | [setup/AYUSH_SETUP.md](setup/AYUSH_SETUP.md) |
+
 ---
 
 ## Ready-made branches (already on GitHub)
