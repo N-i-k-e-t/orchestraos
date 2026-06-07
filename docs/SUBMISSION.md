@@ -8,7 +8,7 @@ Google Cloud Rapid Agent Hackathon — OrchestraOS Loop Sentinel
 |-------|-------|
 | **Project name** | OrchestraOS Loop Sentinel |
 | **Tagline** | Every other platform tells you your agent failed. OrchestraOS makes sure it doesn't. |
-| **Primary track** | Arize (Phoenix OTLP export) |
+| **Primary track** | Arize (Phoenix OTLP + MCP) |
 | **Secondary tracks** | Dynatrace, Elastic, MongoDB Atlas, GitLab |
 | **License** | MIT ([LICENSE](../LICENSE)) |
 | **Language** | Python 3.11, TypeScript (dashboard) |
@@ -18,7 +18,8 @@ Google Cloud Rapid Agent Hackathon — OrchestraOS Loop Sentinel
 ### Required
 
 - [x] **Public GitHub repository** with README, LICENSE, runnable code
-- [x] **79 passing tests** — `poetry run pytest tests/ -v`
+- [x] **83 passing tests** — `poetry run pytest tests/ -v`
+- [x] **Hackathon audit** — [HACKATHON_AUDIT.md](HACKATHON_AUDIT.md)
 - [x] **Architecture documentation** — [ARCHITECTURE.md](ARCHITECTURE.md)
 - [x] **Deployment guide** — [DEPLOY.md](DEPLOY.md)
 - [x] **Live demo URL** — https://orchestraos-dashboard-397417416325.us-central1.run.app

@@ -6,9 +6,9 @@ A Multi-Agent Reliability OS for the [Google Cloud Rapid Agent Hackathon](https:
 
 | Track | Integration |
 |-------|-------------|
-| **Primary** | [Arize Phoenix](https://docs.arize.com/phoenix) — OTLP trace export |
+| **Primary** | [Arize Phoenix](https://docs.arize.com/phoenix) — OTLP export + MCP (`integrations/phoenix_mcp.py`) |
 | **Secondary** | Dynatrace APM, Elastic, MongoDB Atlas, GitLab |
-| **Platform** | Google Cloud — Gemini Flash, Pub/Sub, Cloud Run, Memorystore, Secret Manager |
+| **Platform** | Google Cloud — **Vertex AI Gemini**, **Agent Builder**, Pub/Sub, Cloud Run, Secret Manager |
 
 ---
 
@@ -23,6 +23,19 @@ A Multi-Agent Reliability OS for the [Google Cloud Rapid Agent Hackathon](https:
 | **Savings** | — | **99.1% cost reduction** |
 
 Live scenario: AutoGPT infinite loop — repeated `web_search` with identical params. OrchestraOS detects the loop on call 3, trips the circuit breaker at `risk_score > 0.8`, and remediates within 5 calls.
+
+---
+
+## Why it matters (hackathon impact)
+
+Production AI agents fail silently: infinite tool loops burn **$42+ per incident**, stall for **20 minutes**, and leave ops teams with post-mortems instead of prevention. OrchestraOS is a **reliability OS** — not another chatbot:
+
+- **Gemini + Agent Builder** classify risk from live detector features (`monitor_model/agent_builder.py`)
+- **Circuit breaker** stops runaway agents before budget exhaustion
+- **Remediation chain** recovers sessions in seconds (99.1% cost reduction in the AutoGPT demo)
+- **Arize Phoenix** (OTLP + MCP) gives judges trace-level proof
+
+Most platforms tell you the agent failed. OrchestraOS makes sure it doesn't.
 
 ---
 
@@ -210,7 +223,7 @@ orchestraos/
 | Team onboarding | [docs/TEAM_SETUP.md](docs/TEAM_SETUP.md) |
 | Branching (ready-made branches) | [docs/BRANCHING.md](docs/BRANCHING.md) |
 | GitHub public + branch protection | [docs/GITHUB_SETUP.md](docs/GITHUB_SETUP.md) |
-| Team checkpoint | [docs/CHECKPOINT.md](docs/CHECKPOINT.md) |
+| Hackathon audit checklist | [docs/HACKATHON_AUDIT.md](docs/HACKATHON_AUDIT.md) |
 | Secrets guide (safe) | [docs/SECRETS_LOCAL.md](docs/SECRETS_LOCAL.md) |
 | Private key sheet template | [docs/setup/SECRETS_SHARE.template.md](docs/setup/SECRETS_SHARE.template.md) |
 | Rutuja setup | [docs/setup/RUTUJA_SETUP.md](docs/setup/RUTUJA_SETUP.md) |

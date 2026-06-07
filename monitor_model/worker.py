@@ -9,6 +9,7 @@ import sys
 
 from google.cloud import pubsub_v1
 
+from monitor_model.agent_builder import MonitorAgentBuilder
 from monitor_model.risk_agent import RiskAgent
 from shared.config import get_settings
 from shared.pubsub import get_event_fabric
@@ -23,7 +24,8 @@ class MonitorWorker:
     def __init__(self) -> None:
         self._settings = get_settings()
         self._fabric = get_event_fabric()
-        self._risk_agent = RiskAgent()
+        self._agent_builder = MonitorAgentBuilder()
+        self._risk_agent = self._agent_builder._risk  # noqa: SLF001 — backward compat
         self._subscriber = pubsub_v1.SubscriberClient()
         self._subscription_path = self._subscriber.subscription_path(
             self._settings.gcp_project_id,
@@ -36,7 +38,7 @@ class MonitorWorker:
 
     def handle_feature_vector(self, raw: dict) -> None:
         vector = FeatureVectorSchema.model_validate(raw)
-        assessment = self._risk_agent.assess_vector(vector)
+        assessment = self._agent_builder.execute_vector(vector)
         payload = assessment.model_dump(mode="json")
         message_id = self._fabric.publish_risk_assessment(payload)
         logger.info(

@@ -10,6 +10,7 @@ from integrations.dynatrace_exporter import DynatraceExporter
 from integrations.elastic_exporter import ElasticExporter
 from integrations.gitlab_fallback import GitLabFallback
 from integrations.mongodb_store import MongoIncidentStore
+from integrations.phoenix_mcp import PhoenixMcpClient
 from shared.schemas import BreakerEventSchema, RemediationPlanSchema, SpanSchema
 
 logger = logging.getLogger(__name__)
@@ -20,6 +21,7 @@ class PartnerHub:
 
     def __init__(self) -> None:
         self.arize = ArizeExporter()
+        self.phoenix_mcp = PhoenixMcpClient()
         self.mongodb = MongoIncidentStore()
         self.elastic = ElasticExporter()
         self.dynatrace = DynatraceExporter()
@@ -27,7 +29,13 @@ class PartnerHub:
 
     def export_span(self, span: SpanSchema | dict[str, Any]) -> dict[str, bool]:
         data = span.model_dump(mode="json") if isinstance(span, SpanSchema) else span
-        return {"arize": self.arize.export_span(data)}
+        otlp_ok = self.arize.export_span(data)
+        mcp_ok = self.phoenix_mcp.register_session(
+            str(data.get("session_id", "")),
+            tool_name=str(data.get("tool_name", "")),
+            trace_id=str(data.get("trace_id", "")),
+        )
+        return {"arize_otlp": otlp_ok, "arize_mcp": mcp_ok}
 
     def handle_breaker_event(self, event: BreakerEventSchema | dict[str, Any]) -> dict[str, bool]:
         ev = event if isinstance(event, BreakerEventSchema) else BreakerEventSchema.model_validate(event)

@@ -97,6 +97,7 @@ class TestPartnerHub:
     def _hub_with_mocks(self) -> PartnerHub:
         hub = PartnerHub()
         hub.arize = MagicMock(enabled=True, export_span=MagicMock(return_value=True))
+        hub.phoenix_mcp = MagicMock(enabled=True, register_session=MagicMock(return_value=True))
         hub.mongodb = MagicMock(enabled=True, save_incident=MagicMock(return_value="inc-1"))
         hub.elastic = MagicMock(enabled=True, index_event=MagicMock(return_value=True))
         hub.dynatrace = MagicMock(enabled=True, send_event=MagicMock(return_value=True))
@@ -105,9 +106,12 @@ class TestPartnerHub:
 
     def test_export_span_delegates_to_arize(self) -> None:
         hub = self._hub_with_mocks()
-        results = hub.export_span({"session_id": "s1", "tool_name": "search"})
-        assert results == {"arize": True}
+        hub.phoenix_mcp = MagicMock(enabled=True, register_session=MagicMock(return_value=True))
+        results = hub.export_span({"session_id": "s1", "tool_name": "search", "trace_id": "t1"})
+        assert results["arize_otlp"] is True
+        assert results["arize_mcp"] is True
         hub.arize.export_span.assert_called_once()
+        hub.phoenix_mcp.register_session.assert_called_once()
 
     def test_handle_breaker_event_open_exports(self) -> None:
         hub = self._hub_with_mocks()
