@@ -39,13 +39,24 @@ Most platforms tell you the agent failed. OrchestraOS makes sure it doesn't.
 
 ---
 
+## 50+ working agents (honest claim)
+
+OrchestraOS is a **multi-agent reliability OS** with **38 agent classes** and **81 named capabilities** across **10 fundamentals** (observe, detect, reason, cost, context, tool, reliability, remediate, learn, dashboard). These are real classes with tests — not 50 Cloud Run services. Seven services host the pipeline.
+
+```powershell
+poetry run python scripts/list_agents.py   # prints full roster (81 entries)
+```
+
+Full audit: [docs/AGENT_REGISTRY.md](docs/AGENT_REGISTRY.md)  
+**Remaining work (GitHub + GCP + Devpost):** [docs/REMAINING_WORK.md](docs/REMAINING_WORK.md)
+
 ## Architecture
 
 ```
 External Agent → OpenTelemetry → Collector (:4318)
     → Pub/Sub → Detector Swarm (6 agents + fusion)
-    → Gemini RiskAgent → Circuit Breaker (Redis)
-    → Remediation Chain → Partner Exports → Dashboard
+    → Gemini RiskAgent + Grounding + Confidence → Circuit Breaker (Redis)
+    → Remediation Chain → Learning (MongoDB) → Partner Exports → Dashboard /health
 ```
 
 ```mermaid

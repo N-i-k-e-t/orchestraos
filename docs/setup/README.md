@@ -21,4 +21,6 @@ Pick your guide:
 
 **Verify GCP (30 sec):** [VERIFY_GCP.md](../VERIFY_GCP.md) — one command to list Pub/Sub topics.
 
+**What's left + GCP deploy:** [REMAINING_WORK.md](../REMAINING_WORK.md) — push to GitHub, deploy to Cloud Run, Devpost checklist.
+
 Each person: accept GitHub invite → clone their branch → paste Antigravity prompt → `.\scripts\verify_gcp.ps1` → confirm 83 tests pass.

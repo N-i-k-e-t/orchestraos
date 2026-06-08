@@ -82,7 +82,7 @@ create_sub partners-breaker-sub breaker-events
 create_sub partners-remediation-sub remediation-plans
 
 echo "==> Secret Manager placeholders..."
-SECRETS=(redis-url gemini-api-key mongodb-uri phoenix-endpoint elastic-url elastic-api-key dynatrace-url dynatrace-token gitlab-token gitlab-project-id)
+SECRETS=(redis-url gemini-api-key mongodb-uri phoenix-endpoint arize-api-key elastic-url elastic-api-key dynatrace-url dynatrace-token gitlab-token gitlab-project-id)
 for secret in "${SECRETS[@]}"; do
   if ! gcloud secrets describe "${secret}" &>/dev/null; then
     echo -n "placeholder" | gcloud secrets create "${secret}" --data-file=- --quiet

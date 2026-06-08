@@ -10,8 +10,12 @@ import sys
 from google.cloud import pubsub_v1
 
 from checkpoint.redis_store import RedisStore
+from learning.coordinator import LearningCoordinator
 from remediation.orchestrator import RemediationOrchestrator
+from shared.agent_runtime import AgentRuntime
 from shared.config import get_redis_url, get_settings
+from shared.live_state import LiveStateStore
+from shared.pipeline import REMEDIATION_AGENTS
 from shared.pubsub import get_event_fabric
 from shared.schemas import BreakerEventSchema
 
@@ -26,6 +30,8 @@ class RemediationWorker:
         self._fabric = get_event_fabric()
         self._store = RedisStore(redis_url=get_redis_url())
         self._orchestrator = RemediationOrchestrator(self._store)
+        self._runtime = AgentRuntime(LiveStateStore(self._store))
+        self._learning = LearningCoordinator(store=self._store)
         self._subscriber = pubsub_v1.SubscriberClient()
         self._subscription_path = self._subscriber.subscription_path(
             self._settings.gcp_project_id,
@@ -41,9 +47,15 @@ class RemediationWorker:
 
     def handle_event(self, raw: dict) -> None:
         event = BreakerEventSchema.model_validate(raw)
+        self._runtime.set_service("remediation")
         plan = self._orchestrator.handle_breaker_event(event)
         if plan is None:
             return
+        for name in REMEDIATION_AGENTS:
+            self._runtime.record(event.session_id, name, breaker_state=event.state)
+        self._runtime.set_service("learning")
+        for name in self._learning.run().get("agents_fired", []):
+            self._runtime.record(event.session_id, name)
         message_id = self._fabric.publish_remediation_plan(plan.model_dump(mode="json"))
         logger.info(
             "Remediation session=%s status=%s attempt=%d steps=%d msg=%s",

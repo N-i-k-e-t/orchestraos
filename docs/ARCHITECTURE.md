@@ -3,7 +3,7 @@
 ## Design principles
 
 1. **Observe, don't host** — External agents emit OpenTelemetry spans; OrchestraOS never executes agent logic.
-2. **Six services, not fifty** — Logical agents (LoopAgent, RetryAgent, etc.) are grouped into deployable services.
+2. **Seven deployable services, 50+ logical agents** — LoopAgent, RetryAgent, GroundingAgent, etc. are real classes grouped into Cloud Run workers. See [AGENT_REGISTRY.md](AGENT_REGISTRY.md) for the honest 81-entry roster across 10 reliability fundamentals.
 3. **Event-driven** — Google Pub/Sub decouples every pipeline stage.
 4. **Fail-safe** — Deterministic rules + Gemini Flash; breaker trips at `risk_score > 0.8`.
 5. **Secrets in Secret Manager** — `.env` for local dev only.
@@ -34,10 +34,18 @@ Publishes `FeatureVectorSchema` to `feature-vectors`.
 
 ### 3. Monitor model (`monitor_model/`)
 
-- **RiskAgent** calls Gemini Flash for classification
-- Deterministic fallback when Gemini unavailable
+- **RiskAgent** — Gemini Flash **primary** (Vertex AI on `orchestraos-498316`); deterministic rules **fallback only**
+- **GroundingAgent** — validates feature vectors before scoring
+- **ConfidenceAgent** — calibrates risk when grounding is weak
+- **MonitorAgentBuilder** — Agent Builder orchestration (ingest → Gemini → guardrails)
 - Loop floor: if `loop_score > 0.85`, force `risk_score >= 0.85`
 - Publishes `RiskSchema` to `risk-assessments`
+
+### 3b. Learning (`learning/`)
+
+- **IncidentLearningAgent** — summarizes MongoDB incident history
+- **PatternMiningAgent** — finds recurring failure patterns
+- **PolicyOptimizationAgent** — recommends breaker/loop thresholds
 
 ### 4. Circuit breaker (`breaker/`)
 

@@ -37,3 +37,13 @@ class TestDashboardAPI:
         r = client.get("/api/metrics")
         assert r.status_code == 200
         assert r.json()["cost_saved_usd"] > 40
+
+    def test_health_live(self) -> None:
+        r = client.get("/health/live")
+        assert r.status_code == 200
+        assert "services" in r.json()
+
+    def test_health_agents(self) -> None:
+        r = client.get("/health/agents")
+        assert r.status_code == 200
+        assert r.json()["total"] >= 50

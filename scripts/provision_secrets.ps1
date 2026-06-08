@@ -19,6 +19,7 @@ Set-Secret "redis-url" $env:REDIS_URL
 Set-Secret "gemini-api-key" $env:GEMINI_API_KEY
 Set-Secret "mongodb-uri" $env:MONGODB_URI
 Set-Secret "phoenix-endpoint" $env:PHOENIX_COLLECTOR_ENDPOINT
+Set-Secret "arize-api-key" $env:ARIZE_API_KEY
 Set-Secret "elastic-url" $env:ELASTIC_URL
 Set-Secret "elastic-api-key" $env:ELASTIC_API_KEY
 Set-Secret "dynatrace-url" $env:DYNATRACE_URL

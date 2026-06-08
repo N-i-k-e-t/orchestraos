@@ -18,7 +18,8 @@ Google Cloud Rapid Agent Hackathon — OrchestraOS Loop Sentinel
 ### Required
 
 - [x] **Public GitHub repository** with README, LICENSE, runnable code
-- [x] **83 passing tests** — `poetry run pytest tests/ -v`
+- [x] **104 passing tests** — `poetry run pytest tests/ -v`
+- [x] **50+ agent registry** — [AGENT_REGISTRY.md](AGENT_REGISTRY.md) · `poetry run python scripts/list_agents.py`
 - [x] **Hackathon audit** — [HACKATHON_AUDIT.md](HACKATHON_AUDIT.md)
 - [x] **Architecture documentation** — [ARCHITECTURE.md](ARCHITECTURE.md)
 - [x] **Deployment guide** — [DEPLOY.md](DEPLOY.md)
@@ -55,10 +56,11 @@ Copy these into `README.md` under **Hackathon submission**.
 
 | Feature | Evidence |
 |---------|----------|
-| Multi-agent design | 6 detectors + 5 remediation agents + RiskAgent |
+| Multi-agent design | 38 agent classes, 81 capabilities, 10 reliability fundamentals — [AGENT_REGISTRY.md](AGENT_REGISTRY.md) |
 | Event-driven architecture | 5 Pub/Sub topics, separate worker subscriptions |
 | Production deploy | `cloudbuild.yaml`, `scripts/deploy_cloud_run.sh` |
-| Test coverage | 79 unit/integration tests across all phases |
+| Test coverage | 99 unit/integration tests across all phases |
+| Live health dashboard | `/health/live` + `/health` page (2s poll) |
 
 ### Demo scenario
 

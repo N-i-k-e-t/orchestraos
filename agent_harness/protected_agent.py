@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import time
 import uuid
 from dataclasses import dataclass, field
@@ -13,19 +12,16 @@ import httpx
 from agent_harness.metrics import PROTECTED_DURATION_SEC, TOKENS_PER_CALL, estimate_protected
 from agent_harness.unprotected_agent import AgentRunResult
 from breaker.circuit_breaker import BreakerState
-from breaker.circuit_breaker_agent import CircuitBreakerAgent
 from checkpoint.redis_store import RedisStore
-from detectors.swarm import DetectorSwarm
-from monitor_model.risk_agent import RiskAgent
-from remediation.orchestrator import RemediationOrchestrator
-from shared.schemas import BreakerEventSchema, SpanSchema
+from shared.pipeline import PipelineRunner
+from shared.schemas import SpanSchema
 
 
 @dataclass
 class ProtectedAgent:
     """
-    AutoGPT simulator wired through OrchestraOS:
-    Span → DetectorSwarm → RiskAgent → CircuitBreaker → RemediationOrchestrator
+    AutoGPT simulator wired through OrchestraOS PipelineRunner:
+    Span → all detector agents → Risk/Grounding/Confidence → Breaker → Remediation → Learning
     """
 
     session_id: str = field(default_factory=lambda: f"protected-{uuid.uuid4().hex[:8]}")
@@ -36,10 +32,7 @@ class ProtectedAgent:
 
     def __post_init__(self) -> None:
         self._store = self.store or RedisStore()
-        self._swarm = DetectorSwarm()
-        self._risk = RiskAgent()
-        self._breaker = CircuitBreakerAgent(self._store)
-        self._orchestrator = RemediationOrchestrator(self._store)
+        self._pipeline = PipelineRunner(self._store)
         self._loop_params = {"query": "server status", "target": "localhost"}
         self._recovered = False
         self._fallback_tool = "read_file"
@@ -64,7 +57,7 @@ class ProtectedAgent:
         state_hash: str,
         trace_id: str = "autogpt-trace",
     ) -> dict[str, Any] | None:
-        if not self._breaker.is_allowed(self.session_id):
+        if not self._pipeline._breaker.is_allowed(self.session_id):  # noqa: SLF001
             return {
                 "step": step,
                 "session_id": self.session_id,
@@ -85,50 +78,28 @@ class ProtectedAgent:
         )
         self._emit_span(span)
 
-        vector = self._swarm.process(span)
-        risk = self._risk.assess_vector(vector)
-        breaker_event = self._breaker.process_assessment(risk)
-
+        result = self._pipeline.process_span(span)
         entry: dict[str, Any] = {
             "step": step,
             "session_id": self.session_id,
             "tool_name": tool_name,
             "params": params,
             "token_count": TOKENS_PER_CALL,
-            "loop_detected": vector.loop_detected,
-            "repeat_count": vector.repeat_count,
-            "risk_score": risk.risk_score,
-            "status": risk.status.value,
-            "breaker_state": breaker_event.state,
-            "blocked": breaker_event.state == BreakerState.OPEN.value,
+            "loop_detected": result["loop_detected"],
+            "repeat_count": result.get("repeat_count", 0),
+            "risk_score": result["risk_score"],
+            "status": result["status"],
+            "breaker_state": result["breaker_state"],
+            "blocked": result["blocked"],
+            "agents_fired": result["agents_fired"],
             "orchestraos": True,
         }
 
-        self._store.save_checkpoint(
-            self.session_id,
-            {"tool_name": tool_name, "params": params, "step": step},
-        )
+        if result.get("recovered") or result.get("remediation") == "recovered":
+            self._recovered = True
 
-        if breaker_event.state == BreakerState.OPEN.value:
-            plan = self._orchestrator.handle_breaker_event(
-                BreakerEventSchema(
-                    session_id=breaker_event.session_id,
-                    state=breaker_event.state,
-                    previous_state=breaker_event.previous_state,
-                    risk_score=breaker_event.risk_score,
-                    allowed=breaker_event.allowed,
-                    reason=breaker_event.reason,
-                )
-            )
-            entry["remediation"] = plan.status if plan else None
-            if plan and plan.recovered:
-                self._recovered = True
-                fallback = next(
-                    (s for s in plan.steps if s["action"] == "fallback_tool"),
-                    None,
-                )
-                if fallback:
-                    self._fallback_tool = fallback["payload"].get("fallback_tool", "read_file")
+        if result["breaker_state"] == BreakerState.OPEN.value:
+            entry["remediation"] = result.get("remediation")
             return entry
 
         return entry
@@ -139,7 +110,6 @@ class ProtectedAgent:
         step = 0
         trace_id = f"trace-{uuid.uuid4().hex[:8]}"
 
-        # Phase 1: loop until breaker trips (~3 identical calls)
         for _ in range(3):
             step += 1
             entry = self._tool_call(
@@ -150,7 +120,6 @@ class ProtectedAgent:
             if entry and entry.get("blocked"):
                 break
 
-        # Phase 2: recovery calls with alternate tool/params (≤2 more to finish)
         if self._recovered:
             recovery_params = [
                 {"query": "alternative approach", "source": "remediation"},
@@ -159,7 +128,7 @@ class ProtectedAgent:
             for params in recovery_params:
                 if step >= 5:
                     break
-                if not self._breaker.is_allowed(self.session_id):
+                if not self._pipeline._breaker.is_allowed(self.session_id):  # noqa: SLF001
                     break
                 step += 1
                 entry = self._tool_call(
@@ -208,11 +177,11 @@ def run_protected_demo(
     print(f"  Cost:     ${result.cost_usd:.2f}")
     print(f"  Outcome:  {result.outcome}")
     for entry in result.log:
+        agents = entry.get("agents_fired", [])
         print(
             f"  step={entry['step']} tool={entry.get('tool_name', '-')} "
-            f"repeat={entry.get('repeat_count', '-')} "
             f"risk={entry.get('risk_score', '-')} "
             f"breaker={entry.get('breaker_state', '-')} "
-            f"blocked={entry.get('blocked', False)}"
+            f"agents={len(agents)}"
         )
     return result

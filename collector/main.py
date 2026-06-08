@@ -10,7 +10,7 @@ from fastapi import FastAPI, HTTPException, Request, Response
 from pydantic import ValidationError
 
 from checkpoint.redis_store import RedisStore
-from collector.otel_parser import parse_payload
+from collector.agents import OtelParserAgent, SpanIngestAgent
 from shared.cloudrun import get_listen_port
 from shared.config import get_redis_url, get_settings
 from shared.pubsub import get_pubsub_client
@@ -20,7 +20,25 @@ logger = logging.getLogger(__name__)
 settings = get_settings()
 redis_store = RedisStore(redis_url=get_redis_url())
 pubsub = get_pubsub_client()
+_parser = OtelParserAgent()
+_ingest_agent: SpanIngestAgent | None = None
 _partner_hub = None
+
+
+def _get_ingest_agent() -> SpanIngestAgent:
+    global _ingest_agent
+    if _ingest_agent is None:
+
+        class _Publisher:
+            def publish(self, span: dict) -> str:
+                return pubsub.publish_raw_span(span)
+
+        partner = None
+        hub = _get_partner_hub()
+        if hub.arize.enabled:
+            partner = hub
+        _ingest_agent = SpanIngestAgent(redis_store, _Publisher(), partner)
+    return _ingest_agent
 
 
 def _get_partner_hub():
@@ -117,16 +135,14 @@ async def ingest_traces(request: Request) -> TraceIngestResponse:
     checkpointed = 0
 
     try:
-        spans = parse_payload(payload)
+        spans = _parser.parse(payload)
     except ValidationError as exc:
         raise HTTPException(status_code=422, detail=exc.errors()) from exc
 
+    ingest = _get_ingest_agent()
     for span in spans:
         try:
-            record = span.model_dump(mode="json")
-            message_id = pubsub.publish_raw_span(record)
-            _checkpoint_span(span)
-            _maybe_export_to_partners(span)
+            message_id = ingest.ingest(span)
             published += 1
             checkpointed += 1
             accepted.append(

@@ -10,8 +10,12 @@ from typing import Any
 
 from google.cloud import pubsub_v1
 
+from checkpoint.redis_store import RedisStore
 from detectors.swarm import DetectorSwarm
-from shared.config import get_settings
+from shared.agent_runtime import AgentRuntime
+from shared.config import get_redis_url, get_settings
+from shared.live_state import LiveStateStore
+from shared.pipeline import DETECTOR_AGENTS
 from shared.pubsub import get_event_fabric
 from shared.schemas import SpanSchema
 
@@ -25,6 +29,8 @@ class DetectorWorker:
         self._settings = get_settings()
         self._fabric = get_event_fabric()
         self._swarm = DetectorSwarm()
+        store = RedisStore(redis_url=get_redis_url())
+        self._runtime = AgentRuntime(LiveStateStore(store))
         self._subscriber = pubsub_v1.SubscriberClient()
         self._subscription_path = self._subscriber.subscription_path(
             self._settings.gcp_project_id,
@@ -37,7 +43,15 @@ class DetectorWorker:
 
     def handle_span(self, raw: dict[str, Any]) -> None:
         span = SpanSchema.model_validate(raw)
+        self._runtime.set_service("detectors")
         feature_vector = self._swarm.process(span)
+        for name in DETECTOR_AGENTS:
+            self._runtime.record(
+                span.session_id,
+                name,
+                loop_score=feature_vector.features.get("loop_score", 0),
+                progress_score=feature_vector.features.get("progress_score", 1),
+            )
         message_id = self._fabric.publish_feature_vector(feature_vector.model_dump(mode="json"))
         logger.info(
             "Processed span %s session=%s loop_score=%.2f msg=%s",

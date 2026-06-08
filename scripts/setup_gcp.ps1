@@ -83,7 +83,7 @@ New-Sub "partners-remediation-sub" "remediation-plans"
 
 Write-Host "==> Secret Manager placeholders..."
 $secrets = @(
-    "redis-url", "gemini-api-key", "mongodb-uri", "phoenix-endpoint",
+    "redis-url", "gemini-api-key", "mongodb-uri", "phoenix-endpoint", "arize-api-key",
     "elastic-url", "elastic-api-key", "dynatrace-url", "dynatrace-token",
     "gitlab-token", "gitlab-project-id"
 )

@@ -68,3 +68,25 @@ class RedisStore:
         if raw is None:
             return None
         return json.loads(raw)
+
+    # LiveStateStore protocol helpers
+    def get(self, key: str) -> str | None:
+        return self._client.get(key)
+
+    def set(self, key: str, value: str, ex: int | None = None) -> None:
+        if ex:
+            self._client.setex(key, ex, value)
+        else:
+            self._client.set(key, value)
+
+    def keys(self, pattern: str) -> list[str]:
+        return list(self._client.scan_iter(match=pattern))
+
+    def lpush(self, key: str, value: str) -> None:
+        self._client.lpush(key, value)
+
+    def ltrim(self, key: str, start: int, end: int) -> None:
+        self._client.ltrim(key, start, end)
+
+    def lrange(self, key: str, start: int, end: int) -> list[str]:
+        return self._client.lrange(key, start, end)

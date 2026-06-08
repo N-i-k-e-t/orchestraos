@@ -14,6 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from agent_harness.metrics import cost_reduction, estimate_unprotected
 from agent_harness.protected_agent import ProtectedAgent
 from agent_harness.unprotected_agent import UnprotectedAgent
+from dashboard.health_api import agents_payload, get_live_store, live_payload
 from shared.cloudrun import get_listen_port
 from tests.conftest import FakeRedisStore
 
@@ -51,9 +52,30 @@ def _format_protected(calls: int, cost: float, duration_sec: float, outcome: str
 
 def _run_live_demo() -> dict:
     store = FakeRedisStore()
+    live = get_live_store()
     unprot = UnprotectedAgent(max_iterations=400).run()
     agent = ProtectedAgent(store=store, emit_otel=False)  # type: ignore[arg-type]
     prot = agent.run()
+
+    for entry in prot.log:
+        live.update_session(
+            prot.session_id,
+            breaker_state=str(entry.get("breaker_state", "closed")),
+            risk_score=float(entry.get("risk_score", 0)),
+            loop_score=1.0 if entry.get("loop_detected") else 0.0,
+            progress_score=0.2,
+            active_agents=["LoopAgent", "RiskAgent", "CircuitBreakerAgent", "FallbackToolAgent"],
+        )
+        if entry.get("loop_detected"):
+            live.append_incident(
+                {
+                    "incident_id": str(uuid.uuid4()),
+                    "session_id": prot.session_id,
+                    "incident_type": "loop",
+                    "severity": "critical",
+                    "reason": "Live demo loop detected",
+                }
+            )
 
     unprot_m = estimate_unprotected()
     reduction = cost_reduction(
@@ -99,6 +121,16 @@ def _static_demo() -> dict:
 @app.get("/api/health")
 async def health() -> dict[str, str]:
     return {"status": "ok", "service": "orchestraos-dashboard-api"}
+
+
+@app.get("/health/agents")
+async def health_agents() -> dict:
+    return agents_payload()
+
+
+@app.get("/health/live")
+async def health_live() -> dict:
+    return live_payload()
 
 
 @app.get("/api/demo/compare")

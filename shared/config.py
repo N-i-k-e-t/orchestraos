@@ -122,6 +122,11 @@ def get_phoenix_endpoint() -> str:
     return _read_secret("phoenix-endpoint", "PHOENIX_COLLECTOR_ENDPOINT")
 
 
+def get_arize_api_key() -> str:
+    """Arize API key from env or Secret Manager (optional; OTLP uses phoenix-endpoint)."""
+    return _read_secret("arize-api-key", "ARIZE_API_KEY")
+
+
 def get_elastic_url() -> str:
     return _read_secret("elastic-url", "ELASTIC_URL")
 

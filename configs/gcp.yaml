@@ -50,6 +50,7 @@ secrets:
   - gemini-api-key
   - mongodb-uri
   - phoenix-endpoint
+  - arize-api-key
   - elastic-url
   - elastic-api-key
   - dynatrace-url

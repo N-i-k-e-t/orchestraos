@@ -9,9 +9,11 @@ import sys
 
 from google.cloud import pubsub_v1
 
+from checkpoint.redis_store import RedisStore
 from monitor_model.agent_builder import MonitorAgentBuilder
-from monitor_model.risk_agent import RiskAgent
-from shared.config import get_settings
+from shared.agent_runtime import AgentRuntime
+from shared.config import get_redis_url, get_settings
+from shared.live_state import LiveStateStore
 from shared.pubsub import get_event_fabric
 from shared.schemas import FeatureVectorSchema
 
@@ -25,7 +27,8 @@ class MonitorWorker:
         self._settings = get_settings()
         self._fabric = get_event_fabric()
         self._agent_builder = MonitorAgentBuilder()
-        self._risk_agent = self._agent_builder._risk  # noqa: SLF001 — backward compat
+        store = RedisStore(redis_url=get_redis_url())
+        self._runtime = AgentRuntime(LiveStateStore(store))
         self._subscriber = pubsub_v1.SubscriberClient()
         self._subscription_path = self._subscriber.subscription_path(
             self._settings.gcp_project_id,
@@ -38,7 +41,18 @@ class MonitorWorker:
 
     def handle_feature_vector(self, raw: dict) -> None:
         vector = FeatureVectorSchema.model_validate(raw)
+        self._runtime.set_service("monitor")
         assessment = self._agent_builder.execute_vector(vector)
+        for name in ("RiskAgent", "GroundingAgent", "ConfidenceAgent", "MonitorAgentBuilder"):
+            self._runtime.record(
+                vector.session_id,
+                name,
+                risk_score=assessment.risk_score,
+                loop_score=vector.features.get("loop_score", 0),
+                progress_score=vector.features.get("progress_score", 1),
+            )
+        if "gemini:" in assessment.reason:
+            self._runtime.record(vector.session_id, "GeminiClient", risk_score=assessment.risk_score)
         payload = assessment.model_dump(mode="json")
         message_id = self._fabric.publish_risk_assessment(payload)
         logger.info(

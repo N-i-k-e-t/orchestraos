@@ -12,7 +12,9 @@ from google.cloud import pubsub_v1
 from breaker.circuit_breaker_agent import CircuitBreakerAgent
 from breaker.health_agent import HealthAgent
 from checkpoint.redis_store import RedisStore
+from shared.agent_runtime import AgentRuntime
 from shared.config import get_redis_url, get_settings
+from shared.live_state import LiveStateStore
 from shared.pubsub import get_event_fabric
 from shared.schemas import RiskSchema
 
@@ -28,6 +30,7 @@ class BreakerWorker:
         self._store = RedisStore(redis_url=get_redis_url())
         self._agent = CircuitBreakerAgent(self._store)
         self._health = HealthAgent(self._store)
+        self._runtime = AgentRuntime(LiveStateStore(self._store))
         self._subscriber = pubsub_v1.SubscriberClient()
         self._subscription_path = self._subscriber.subscription_path(
             self._settings.gcp_project_id,
@@ -44,7 +47,25 @@ class BreakerWorker:
 
     def handle_assessment(self, raw: dict) -> None:
         assessment = RiskSchema.model_validate(raw)
+        self._runtime.set_service("breaker")
         event = self._agent.process_assessment(assessment)
+        self._runtime.record(
+            assessment.session_id,
+            "CircuitBreakerAgent",
+            risk_score=assessment.risk_score,
+            breaker_state=event.state,
+        )
+        self._runtime.record(assessment.session_id, "HealthAgent", breaker_state=event.state)
+        if event.state == "open":
+            self._runtime.record_incident(
+                {
+                    "incident_id": f"{assessment.session_id}-breaker",
+                    "session_id": assessment.session_id,
+                    "incident_type": "breaker_trip",
+                    "severity": "critical",
+                    "reason": assessment.reason,
+                }
+            )
         message_id = self._fabric.publish_breaker_event(event.model_dump(mode="json"))
         logger.info(
             "Breaker session=%s %s→%s allowed=%s risk=%.2f msg=%s",

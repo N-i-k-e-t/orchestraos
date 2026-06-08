@@ -13,7 +13,8 @@ Last updated after team onboarding docs and public repo setup.
 | Stage | Status | Notes |
 |-------|--------|-------|
 | Phases 1–10 built | ✅ Done | Full pipeline: collector → detectors → risk → breaker → remediation → dashboard |
-| 83 tests passing | ✅ Done | `poetry run pytest tests/ -v` |
+| 104 tests passing | ✅ Done | `poetry run pytest tests/ -v` |
+| 50+ agent registry (81 entries) | ✅ Done | [AGENT_REGISTRY.md](AGENT_REGISTRY.md) · `scripts/list_agents.py` |
 | Light-theme dashboard + demo | ✅ Done | Local: `poetry run orchestraos-dashboard` → http://localhost:8080 |
 | Git push to GitHub | ✅ Done | `main`, `dev`, + 3 team branches |
 | Repo public (Free plan protection) | ✅ Done | `visibility: public` — branch rules can enforce |
@@ -94,3 +95,5 @@ Then update `configs/gcp.yaml` → `live_dashboard_url` and README with the work
 | [LIVE_RESOURCES.md](LIVE_RESOURCES.md) | Live keys, auth, test scenarios |
 | [CLOUD_SHELL_SETUP.md](CLOUD_SHELL_SETUP.md) | SA bootstrap on orchestraos-498316 |
 | [VERIFY_GCP.md](VERIFY_GCP.md) | One-command Pub/Sub verify for teammates |
+| [AGENT_REGISTRY.md](AGENT_REGISTRY.md) | 50+ agents claim + 10 fundamentals audit |
+| [REMAINING_WORK.md](REMAINING_WORK.md) | What's left: GitHub push, GCP deploy, Devpost |

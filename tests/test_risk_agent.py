@@ -59,9 +59,10 @@ class TestRiskAgent:
         assert risk.reason
         assert 0.0 <= risk.risk_score <= 1.0
 
-    def test_gemini_result_can_raise_score(self) -> None:
+    def test_gemini_primary_when_available(self) -> None:
         gemini = MagicMock(spec=GeminiClient)
         gemini.available = True
+        gemini.backend = "api_key"
         gemini.classify.return_value = {
             "status": RiskLevel.CRITICAL,
             "risk_score": 0.95,
@@ -69,8 +70,21 @@ class TestRiskAgent:
         }
         agent = RiskAgent(gemini=gemini)
         risk = agent.assess("sess-1", _loop_features(loop_score=0.5), loop_detected=True)
+        assert agent.last_source == "gemini:api_key"
         assert risk.risk_score >= 0.85
-        assert "loop" in risk.reason.lower() or "Gemini" in risk.reason
+        assert "gemini:api_key" in risk.reason
+        gemini.classify.assert_called_once()
+
+    def test_deterministic_fallback_when_gemini_unavailable(self) -> None:
+        gemini = MagicMock(spec=GeminiClient)
+        gemini.available = False
+        gemini.backend = "none"
+        gemini.classify.return_value = None
+        agent = RiskAgent(gemini=gemini)
+        risk = agent.assess("sess-1", _loop_features(), loop_detected=True)
+        assert agent.last_source == "deterministic_fallback"
+        assert "deterministic" in risk.reason.lower()
+        gemini.classify.assert_not_called()
 
     def test_assess_vector_from_swarm(self) -> None:
         swarm = DetectorSwarm()

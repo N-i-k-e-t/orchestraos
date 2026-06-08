@@ -14,7 +14,10 @@ packages = [
     { include = "remediation" },
     { include = "agent_harness" },
     { include = "integrations" },
+    { include = "learning" },
     { include = "shared" },
+    { include = "dashboard" },
+    { include = "scripts" },
 ]
 
 [tool.poetry.dependencies]
@@ -53,6 +56,7 @@ orchestraos-remediation = "remediation.worker:main"
 orchestraos-demo = "agent_harness.run_demo:main"
 orchestraos-dashboard = "dashboard.server:main"
 orchestraos-partners = "integrations.worker:main"
+orchestraos-list-agents = "scripts.list_agents:main"
 
 [build-system]
 requires = ["poetry-core"]

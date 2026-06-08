@@ -12,6 +12,8 @@ class FakeRedisStore:
         self._breakers: dict[str, dict[str, Any]] = {}
         self._remediation_plans: dict[str, dict[str, Any]] = {}
         self._remediation_attempts: dict[str, int] = {}
+        self._kv: dict[str, str] = {}
+        self._lists: dict[str, list[str]] = {}
 
     def save_checkpoint(self, session_id: str, data: dict[str, Any]) -> None:
         self._checkpoints[session_id] = data
@@ -41,3 +43,23 @@ class FakeRedisStore:
 
     def load_remediation_plan(self, session_id: str) -> dict[str, Any] | None:
         return self._remediation_plans.get(session_id)
+
+    def get(self, key: str) -> str | None:
+        return self._kv.get(key)
+
+    def set(self, key: str, value: str, ex: int | None = None) -> None:
+        self._kv[key] = value
+
+    def keys(self, pattern: str) -> list[str]:
+        prefix = pattern.rstrip("*")
+        return [k for k in self._kv if k.startswith(prefix)]
+
+    def lpush(self, key: str, value: str) -> None:
+        self._lists.setdefault(key, []).insert(0, value)
+
+    def ltrim(self, key: str, start: int, end: int) -> None:
+        if key in self._lists:
+            self._lists[key] = self._lists[key][start : end + 1]
+
+    def lrange(self, key: str, start: int, end: int) -> list[str]:
+        return self._lists.get(key, [])[start : end + 1]

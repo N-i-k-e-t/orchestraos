@@ -25,7 +25,7 @@ Judging criteria: **Technological Implementation · Design · Potential Impact �
 
 | Criterion | Status | How to prove |
 |-----------|--------|--------------|
-| 1. Technological Implementation | **STRONG** | Vertex Gemini + Agent Builder + Pub/Sub + Phoenix OTLP/MCP + 79+ tests |
+| 1. Technological Implementation | **STRONG** | 50+ working agents (81 registry entries, 10 fundamentals) + Vertex Gemini + Agent Builder + 99 tests |
 | 2. Design | **STRONG** | Light-theme two-pane dashboard `dashboard/src/pages/DemoPage.tsx` |
 | 3. Potential Impact | **STRONG** | 99.1% cost reduction demo; README "Why it matters" |
 | 4. Quality of the Idea | **STRONG** | Agents protecting agents — reliability OS, not another chatbot |
@@ -91,3 +91,4 @@ curl http://localhost:4318/health
 - [SUBMISSION.md](SUBMISSION.md) · [VIDEO_SCRIPT.md](VIDEO_SCRIPT.md) · [ARCHITECTURE.md](ARCHITECTURE.md)
 - [LIVE_RESOURCES.md](LIVE_RESOURCES.md) — keys, auth, GCP config, real-world test scenarios
 - [CLOUD_SHELL_SETUP.md](CLOUD_SHELL_SETUP.md) — `orchestraos-498316` SA bootstrap (no JSON keys)
+- [AGENT_REGISTRY.md](AGENT_REGISTRY.md) — 50+ agents claim, 10 fundamentals, honest audit table

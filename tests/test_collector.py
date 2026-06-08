@@ -29,7 +29,11 @@ def client(mock_redis, mock_pubsub):
         patch("collector.main.redis_store", mock_redis),
         patch("collector.main.pubsub", mock_pubsub),
         patch("collector.main.redis_store.ping", return_value=True),
+        patch("collector.main._ingest_agent", None),
     ):
+        import collector.main as cm
+
+        cm._ingest_agent = None
         from collector.main import app
 
         with TestClient(app) as test_client:
