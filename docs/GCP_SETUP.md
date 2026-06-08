@@ -6,13 +6,16 @@ Single GCP project for all three teammates. Local dev uses Docker + emulators; C
 
 | Setting | Value |
 |---------|-------|
-| **Project ID** | `slimy-497412` |
+| **Project ID** | `orchestraos-498316` |
 | **Region** | `us-central1` |
-| **Artifact Registry** | `us-central1-docker.pkg.dev/slimy-497412/orchestraos` |
-| **Service account** | `orchestraos-runtime@slimy-497412.iam.gserviceaccount.com` |
-| **Live dashboard** | https://orchestraos-dashboard-397417416325.us-central1.run.app |
+| **Artifact Registry** | `us-central1-docker.pkg.dev/orchestraos-498316/orchestraos` |
+| **Deploy SA** | `orchestraos-sa@orchestraos-498316.iam.gserviceaccount.com` |
+| **Cloud Run runtime SA** | `orchestra-runtime@orchestraos-498316.iam.gserviceaccount.com` |
+| **Live dashboard** | Deploy pending on new project (see [CLOUD_SHELL_SETUP.md](CLOUD_SHELL_SETUP.md)) |
 
 Canonical YAML: [configs/gcp.yaml](../configs/gcp.yaml)
+
+**Cloud Shell bootstrap (done):** [CLOUD_SHELL_SETUP.md](CLOUD_SHELL_SETUP.md) — `orchestraos-sa` IAM roles applied. JSON keys blocked by org policy; use `gcloud auth application-default login` instead.
 
 ---
 
@@ -21,7 +24,7 @@ Canonical YAML: [configs/gcp.yaml](../configs/gcp.yaml)
 ### Windows (PowerShell)
 
 ```powershell
-$env:GCP_PROJECT = "slimy-497412"
+$env:GCP_PROJECT = "orchestraos-498316"
 $env:GCP_REGION = "us-central1"
 $env:SKIP_MEMORYSTORE = "1"   # remove after VPC connector works
 .\scripts\setup_gcp.ps1
@@ -30,7 +33,7 @@ $env:SKIP_MEMORYSTORE = "1"   # remove after VPC connector works
 ### Bash (Git Bash / Linux)
 
 ```bash
-export GCP_PROJECT=slimy-497412
+export GCP_PROJECT=orchestraos-498316
 export GCP_REGION=us-central1
 bash scripts/setup_gcp.sh
 ```
@@ -43,7 +46,7 @@ This enables APIs, creates Artifact Registry, Pub/Sub topics/subscriptions, Secr
 gcloud compute networks vpc-access connectors create orchestraos-connector `
   --region=us-central1 `
   --range=10.8.0.0/28 `
-  --project=slimy-497412
+  --project=orchestraos-498316
 ```
 
 Memorystore Redis (required for collector/workers in prod) — omit `SKIP_MEMORYSTORE` or run setup without it (~15–20 min).
@@ -67,7 +70,7 @@ Secret IDs (must match `shared/config.py`):
 ### Set real values (PowerShell)
 
 ```powershell
-$env:GCP_PROJECT = "slimy-497412"
+$env:GCP_PROJECT = "orchestraos-498316"
 $env:GEMINI_API_KEY = "your-gemini-key"
 $env:REDIS_URL = "redis://YOUR_REDIS_HOST:6379/0"
 .\scripts\provision_secrets.ps1
@@ -78,11 +81,11 @@ Never paste keys into git or Slack — use a password manager or 1:1 share for l
 ### Grant teammates secret access
 
 ```powershell
-gcloud projects add-iam-policy-binding slimy-497412 `
+gcloud projects add-iam-policy-binding orchestraos-498316 `
   --member="user:rutuja@example.com" `
   --role="roles/secretmanager.secretAccessor"
 
-gcloud projects add-iam-policy-binding slimy-497412 `
+gcloud projects add-iam-policy-binding orchestraos-498316 `
   --member="user:ayush@example.com" `
   --role="roles/secretmanager.secretAccessor"
 ```
@@ -90,7 +93,7 @@ gcloud projects add-iam-policy-binding slimy-497412 `
 Optional editor role for deploy:
 
 ```powershell
-gcloud projects add-iam-policy-binding slimy-497412 `
+gcloud projects add-iam-policy-binding orchestraos-498316 `
   --member="user:ayush@example.com" `
   --role="roles/run.admin"
 ```
@@ -103,7 +106,7 @@ gcloud projects add-iam-policy-binding slimy-497412 `
 
 ```powershell
 cd c:\Users\niket\Downloads\os-rapid
-gcloud builds submit --config=cloudbuild.yaml --project=slimy-497412
+gcloud builds submit --config=cloudbuild.yaml --project=orchestraos-498316
 ```
 
 Do **not** pass comma-separated `--substitutions` from PowerShell — defaults live in `cloudbuild.yaml`.
@@ -111,7 +114,7 @@ Do **not** pass comma-separated `--substitutions` from PowerShell — defaults l
 ### Deploy all services
 
 ```powershell
-$env:GCP_PROJECT = "slimy-497412"
+$env:GCP_PROJECT = "orchestraos-498316"
 $env:IMAGE_TAG = "latest"
 .\scripts\deploy_cloud_run.ps1
 ```
@@ -123,8 +126,8 @@ Already deployed. To redeploy:
 ```powershell
 gcloud run deploy orchestraos-dashboard `
   --region=us-central1 `
-  --project=slimy-497412 `
-  --image=us-central1-docker.pkg.dev/slimy-497412/orchestraos/dashboard:latest `
+  --project=orchestraos-498316 `
+  --image=us-central1-docker.pkg.dev/orchestraos-498316/orchestraos/dashboard:latest `
   --allow-unauthenticated `
   --port=8080 `
   --command=python `
@@ -140,14 +143,14 @@ Each person on their machine:
 ```powershell
 gcloud auth login
 gcloud auth application-default login
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 ```
 
 Verify:
 
 ```powershell
 gcloud config get-value project
-gcloud secrets list --project=slimy-497412
+gcloud secrets list --project=orchestraos-498316
 ```
 
 ---

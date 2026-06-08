@@ -46,10 +46,10 @@ cp .env.example .env
 ```bash
 gcloud auth login
 gcloud auth application-default login
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 ```
 
-You need deploy access on project `slimy-497412`. Ask Niket if `gcloud run services list` fails.
+You need deploy access on project `orchestraos-498316`. Ask Niket if `gcloud run services list` fails.
 
 ---
 
@@ -105,7 +105,7 @@ Shared code (coordinate before changing): `shared/cloudrun.py`, `configs/gcp.yam
 | 2 | Retry VPC connector + full stack | See [DEPLOY.md](../DEPLOY.md) |
 | 3 | Update live URL in `configs/gcp.yaml` after deploy | Edit `live_dashboard_url` |
 
-Live URL (broken now): https://orchestraos-dashboard-397417416325.us-central1.run.app
+**GCP project:** `orchestraos-498316` — deploy dashboard here (old `slimy-497412` URL deprecated). See [CLOUD_SHELL_SETUP.md](../CLOUD_SHELL_SETUP.md).
 
 ---
 
@@ -127,14 +127,14 @@ Ask Niket or Rutuja to approve your PR.
 ## Deploy dashboard (when ready)
 
 ```powershell
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 .\scripts\deploy_cloud_run.ps1
 ```
 
 Or on Mac/Linux:
 
 ```bash
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 bash scripts/deploy_cloud_run.sh
 ```
 

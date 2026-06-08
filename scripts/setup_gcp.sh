@@ -13,7 +13,7 @@ set -euo pipefail
 PROJECT="${GCP_PROJECT:-$(gcloud config get-value project 2>/dev/null)}"
 REGION="${GCP_REGION:-us-central1}"
 REPO="${ARTIFACT_REPO:-orchestraos}"
-SA="orchestraos-runtime"
+SA="${RUNTIME_SA:-orchestra-runtime}"
 CONNECTOR="orchestraos-connector"
 REDIS_INSTANCE="orchestraos-redis"
 

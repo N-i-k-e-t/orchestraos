@@ -12,7 +12,7 @@ Arize, MongoDB, Elastic, Dynatrace, GitLab). Never hardcode secrets.
 
 I am Rutuja. My ready-made branch already exists: rutuja/monitor
 Repo: https://github.com/N-i-k-e-t/orchestraos
-GCP project: slimy-497412
+GCP project: orchestraos-498316
 
 STEP 1 — Clone & checkout my branch
 - git clone https://github.com/N-i-k-e-t/orchestraos.git
@@ -29,13 +29,13 @@ STEP 3 — Local environment
 - Copy .env.example to .env
 - Set REDIS_URL=redis://localhost:6379/0
 - Set PUBSUB_EMULATOR_HOST=localhost:8085
-- Set GOOGLE_CLOUD_PROJECT=slimy-497412
+- Set GOOGLE_CLOUD_PROJECT=orchestraos-498316
 - Confirm .env is in .gitignore and is NOT staged for commit
 
 STEP 4 — Connect Antigravity to Google Cloud
 - gcloud auth login
 - gcloud auth application-default login
-- gcloud config set project slimy-497412
+- gcloud config set project orchestraos-498316
 - gcloud config list
 
 STEP 5 — Verify Secret Manager access (keys live here, not in code)

@@ -55,7 +55,7 @@ GOOGLE_CLOUD_PROJECT=orchestraos-local
 | Person | Extra `.env` keys (optional) |
 |--------|------------------------------|
 | **Rutuja** | `GEMINI_API_KEY=...` when testing RiskAgent without GCP |
-| **Ayush** | `GOOGLE_CLOUD_PROJECT=slimy-497412` when deploying (auth via gcloud, not `.env`) |
+| **Ayush** | `GOOGLE_CLOUD_PROJECT=orchestraos-498316` when deploying (auth via gcloud, not `.env`) |
 | **Niket** | Partner keys if testing Arize/MongoDB/etc. |
 
 Full private sheet: ask Niket for **TEAM_SECRETS_SHARE** (not on GitHub).
@@ -67,7 +67,7 @@ Full private sheet: ask Niket for **TEAM_SECRETS_SHARE** (not on GitHub).
 ```powershell
 gcloud auth login
 gcloud auth application-default login
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 ```
 
 Niket grants: `roles/secretmanager.secretAccessor` — see [GCP_SETUP.md](GCP_SETUP.md).

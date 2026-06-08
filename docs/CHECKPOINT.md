@@ -3,7 +3,7 @@
 Last updated after team onboarding docs and public repo setup.
 
 **Repo:** https://github.com/N-i-k-e-t/orchestraos (public)  
-**GCP project:** `slimy-497412`  
+**GCP project:** `orchestraos-498316`  
 **Region:** `us-central1`
 
 ---
@@ -13,7 +13,7 @@ Last updated after team onboarding docs and public repo setup.
 | Stage | Status | Notes |
 |-------|--------|-------|
 | Phases 1–10 built | ✅ Done | Full pipeline: collector → detectors → risk → breaker → remediation → dashboard |
-| 79 tests passing | ✅ Done | `poetry run pytest tests/ -v` |
+| 83 tests passing | ✅ Done | `poetry run pytest tests/ -v` |
 | Light-theme dashboard + demo | ✅ Done | Local: `poetry run orchestraos-dashboard` → http://localhost:8080 |
 | Git push to GitHub | ✅ Done | `main`, `dev`, + 3 team branches |
 | Repo public (Free plan protection) | ✅ Done | `visibility: public` — branch rules can enforce |
@@ -24,7 +24,9 @@ Last updated after team onboarding docs and public repo setup.
 | Secrets in GCP Secret Manager | ✅ Done | 10 secrets created — verify real values for `gemini-api-key`, `redis-url` |
 | Teammate Secret Manager IAM | ⬜ Pending | Niket grants `roles/secretmanager.secretAccessor` to Rutuja + Ayush |
 | Antigravity onboarding | ⬜ Next | Teammates paste prompts in [setup/](setup/) |
-| Cloud Run live dashboard | ⬜ Broken | URL times out — Ayush redeploys via `scripts/deploy_cloud_run.ps1` |
+| GCP project migrated | ✅ Done | `orchestraos-498316` (was `slimy-497412`) |
+| Cloud Shell SA bootstrap | ✅ Done | `orchestraos-sa` IAM roles — no JSON keys (org policy) |
+| Cloud Run live dashboard | ⬜ Pending | Ayush deploys to `orchestraos-498316` via `scripts/deploy_cloud_run.ps1` |
 | Full stack Cloud Run (7 services) | ⬜ Pending | VPC connector + Memorystore blocked earlier |
 | Hackathon video + screenshots | ⬜ Pending | See [VIDEO_SCRIPT.md](VIDEO_SCRIPT.md) |
 
@@ -70,7 +72,7 @@ main              ← protected, demo-ready
 Ayush runs (when GCP deploy access confirmed):
 
 ```powershell
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 .\scripts\deploy_cloud_run.ps1
 ```
 
@@ -90,3 +92,5 @@ Then update `configs/gcp.yaml` → `live_dashboard_url` and README with the work
 | [GITHUB_SETUP.md](GITHUB_SETUP.md) | Public repo + security |
 | [GCP_SETUP.md](GCP_SETUP.md) | Secrets + IAM |
 | [LIVE_RESOURCES.md](LIVE_RESOURCES.md) | Live keys, auth, test scenarios |
+| [CLOUD_SHELL_SETUP.md](CLOUD_SHELL_SETUP.md) | SA bootstrap on orchestraos-498316 |
+| [VERIFY_GCP.md](VERIFY_GCP.md) | One-command Pub/Sub verify for teammates |

@@ -238,7 +238,7 @@ orchestraos/
 | Screenshot guide | [docs/screenshots/README.md](docs/screenshots/README.md) |
 | Architecture deep-dive | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 
-**Live demo URL:** https://orchestraos-dashboard-397417416325.us-central1.run.app _(currently unreachable — use `poetry run orchestraos-dashboard` locally until redeploy)_
+**GCP project:** `orchestraos-498316` · **Live demo URL:** deploy pending (see [docs/CLOUD_SHELL_SETUP.md](docs/CLOUD_SHELL_SETUP.md)). Local: `poetry run orchestraos-dashboard` → http://localhost:8080
 
 **Video URL:** _add YouTube/Loom link_
 

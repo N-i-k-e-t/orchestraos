@@ -10,7 +10,7 @@ $ErrorActionPreference = "Continue"
 $Project = if ($env:GCP_PROJECT) { $env:GCP_PROJECT } else { (gcloud config get-value project 2>$null) }
 $Region = if ($env:GCP_REGION) { $env:GCP_REGION } else { "us-central1" }
 $Repo = if ($env:ARTIFACT_REPO) { $env:ARTIFACT_REPO } else { "orchestraos" }
-$Sa = "orchestraos-runtime"
+$Sa = if ($env:RUNTIME_SA) { $env:RUNTIME_SA } else { "orchestra-runtime" }
 $Connector = "orchestraos-connector"
 $RedisInstance = "orchestraos-redis"
 

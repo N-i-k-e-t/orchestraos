@@ -9,7 +9,7 @@ Three contributors, one repo, no stepping on each other's work.
 | Ayush | Antigravity | `ayush/dashboard` | Dashboard, Cloud Run, infra, harness |
 
 **Repo:** https://github.com/N-i-k-e-t/orchestraos  
-**GCP project:** `slimy-497412`
+**GCP project:** `orchestraos-498316`
 
 ---
 
@@ -60,7 +60,7 @@ cd ..
 copy .env.example .env
 gcloud auth login
 gcloud auth application-default login
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 poetry run pytest tests/ -v
 ```
 
@@ -77,7 +77,7 @@ cd ..
 copy .env.example .env
 gcloud auth login
 gcloud auth application-default login
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 poetry run pytest tests/ -v
 ```
 

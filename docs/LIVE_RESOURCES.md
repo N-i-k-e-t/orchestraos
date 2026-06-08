@@ -2,7 +2,7 @@
 
 What keys, auth, and GCP configuration you need to run OrchestraOS **live** on Google Cloud, and which **real-world scenarios** to test for the hackathon demo.
 
-**GCP project:** `slimy-497412` · **Region:** `us-central1`  
+**GCP project:** `orchestraos-498316` · **Region:** `us-central1`  
 **Repo:** https://github.com/N-i-k-e-t/orchestraos
 
 Related: [GCP_SETUP.md](GCP_SETUP.md) · [SECRETS_LOCAL.md](SECRETS_LOCAL.md) · [DEPLOY.md](DEPLOY.md) · [HACKATHON_AUDIT.md](HACKATHON_AUDIT.md)
@@ -16,7 +16,7 @@ Related: [GCP_SETUP.md](GCP_SETUP.md) · [SECRETS_LOCAL.md](SECRETS_LOCAL.md) ·
 ```powershell
 gcloud auth login
 gcloud auth application-default login
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 ```
 
 | Who | IAM role needed |
@@ -28,11 +28,16 @@ gcloud config set project slimy-497412
 Grant teammate access:
 
 ```powershell
-gcloud projects add-iam-policy-binding slimy-497412 --member="user:EMAIL" --role="roles/secretmanager.secretAccessor"
-gcloud projects add-iam-policy-binding slimy-497412 --member="user:EMAIL" --role="roles/run.admin"
+gcloud projects add-iam-policy-binding orchestraos-498316 --member="user:EMAIL" --role="roles/secretmanager.secretAccessor"
+gcloud projects add-iam-policy-binding orchestraos-498316 --member="user:EMAIL" --role="roles/run.admin"
 ```
 
-Cloud Run services use service account **`orchestraos-runtime@slimy-497412.iam.gserviceaccount.com`**. Do not commit personal service-account JSON to git.
+| SA | Email | Notes |
+|----|-------|-------|
+| Deploy | `orchestraos-sa@orchestraos-498316.iam.gserviceaccount.com` | Build/deploy; roles set in Cloud Shell |
+| Runtime | `orchestra-runtime@orchestraos-498316.iam.gserviceaccount.com` | Attached to Cloud Run services |
+
+**No JSON key files** — org policy `iam.disableServiceAccountKeyCreation` blocks `orchestraos-key.json`. Use `gcloud auth application-default login` locally. See [CLOUD_SHELL_SETUP.md](CLOUD_SHELL_SETUP.md).
 
 ---
 
@@ -51,7 +56,7 @@ Cloud Run services use service account **`orchestraos-runtime@slimy-497412.iam.g
 Set real values:
 
 ```powershell
-$env:GCP_PROJECT = "slimy-497412"
+$env:GCP_PROJECT = "orchestraos-498316"
 $env:GEMINI_API_KEY = "your-key"
 $env:REDIS_URL = "redis://YOUR_MEMORYSTORE_IP:6379/0"
 $env:PHOENIX_COLLECTOR_ENDPOINT = "https://your-phoenix-url"
@@ -74,7 +79,8 @@ Private team key sheet (not on GitHub): copy `docs/setup/SECRETS_SHARE.template.
 
 | Component | Purpose | Status |
 |-----------|---------|--------|
-| Project `slimy-497412` | All services | Done |
+| Project `orchestraos-498316` | All services | Done (migrated from `slimy-497412`) |
+| `orchestraos-sa` IAM roles | Deploy / Vertex / secrets | Done (Cloud Shell) |
 | Artifact Registry `orchestraos` | Docker images | Done |
 | Pub/Sub topics/subscriptions | Event pipeline | Done |
 | VPC connector `orchestraos-connector` | Reach Memorystore | Retry if failed |
@@ -84,8 +90,8 @@ Private team key sheet (not on GitHub): copy `docs/setup/SECRETS_SHARE.template.
 Full live deploy:
 
 ```powershell
-gcloud builds submit --config=cloudbuild.yaml --project=slimy-497412
-$env:GCP_PROJECT = "slimy-497412"
+gcloud builds submit --config=cloudbuild.yaml --project=orchestraos-498316
+$env:GCP_PROJECT = "orchestraos-498316"
 .\scripts\deploy_cloud_run.ps1
 ```
 
@@ -113,7 +119,7 @@ Canonical config: [configs/gcp.yaml](../configs/gcp.yaml)
 |----------|---------|-------|
 | `REDIS_URL` | `redis://localhost:6379/0` | Docker compose Redis |
 | `PUBSUB_EMULATOR_HOST` | `localhost:8085` | Local emulator |
-| `GOOGLE_CLOUD_PROJECT` | `orchestraos-local` | Use `slimy-497412` for real GCP |
+| `GOOGLE_CLOUD_PROJECT` | `orchestraos-local` | Use `orchestraos-498316` for real GCP |
 | `GEMINI_API_KEY` | (unset) | Optional locally; required for live Gemini without Vertex |
 | `USE_VERTEX_GEMINI` | `true` | Vertex AI on GCP when no emulator |
 | `VERTEX_AI_LOCATION` | `us-central1` | Must match deploy region |
@@ -144,7 +150,7 @@ Secrets load from **Secret Manager** via `shared/config.py`. No `.env` on Cloud 
 | Arize Phoenix | Phoenix UI | Traces/sessions visible |
 | Gemini backend | See verify command below | `vertex` or `api_key` |
 
-Current dashboard URL (update after redeploy): https://orchestraos-dashboard-397417416325.us-central1.run.app
+Dashboard URL: deploy to `orchestraos-498316` then update [configs/gcp.yaml](../configs/gcp.yaml). Old project URL (`slimy-497412`) is deprecated.
 
 ### Verify Gemini path
 

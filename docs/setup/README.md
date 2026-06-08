@@ -9,7 +9,7 @@ Pick your guide:
 | **Niket** | Branch `niket/backbone` in Cursor | — |
 
 **Repo:** https://github.com/N-i-k-e-t/orchestraos (public — only collaborators can push)  
-**GCP project:** `slimy-497412`
+**GCP project:** `orchestraos-498316`
 
 **Project status:** [CHECKPOINT.md](../CHECKPOINT.md)
 
@@ -17,4 +17,8 @@ Pick your guide:
 
 **Live resources:** [LIVE_RESOURCES.md](../LIVE_RESOURCES.md) — keys, auth, GCP config, test scenarios.
 
-Each person: accept GitHub invite → clone their branch → paste Antigravity prompt → confirm 83 tests pass.
+**Cloud Shell SA (done):** [CLOUD_SHELL_SETUP.md](../CLOUD_SHELL_SETUP.md) — `orchestraos-sa` on `orchestraos-498316`.
+
+**Verify GCP (30 sec):** [VERIFY_GCP.md](../VERIFY_GCP.md) — one command to list Pub/Sub topics.
+
+Each person: accept GitHub invite → clone their branch → paste Antigravity prompt → `.\scripts\verify_gcp.ps1` → confirm 83 tests pass.

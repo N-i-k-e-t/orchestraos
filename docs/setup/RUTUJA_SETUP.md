@@ -46,7 +46,7 @@ cp .env.example .env
 ```bash
 gcloud auth login
 gcloud auth application-default login
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 ```
 
 Niket will grant you Secret Manager access. **Do not put API keys in git** — use `.env` locally only.

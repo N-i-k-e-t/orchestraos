@@ -6,7 +6,7 @@ Onboard Rutuja and Ayush (Antigravity) and Niket (Cursor) on the same repo and G
 
 | Who | IDE | Branch | GCP |
 |-----|-----|--------|-----|
-| Niket | Cursor | `niket/backbone` | `slimy-497412` |
+| Niket | Cursor | `niket/backbone` | `orchestraos-498316` |
 | Rutuja | Antigravity | `rutuja/monitor` | Same project |
 | Ayush | Antigravity | `ayush/dashboard` | Same project |
 
@@ -85,8 +85,18 @@ cd c:\Users\niket\Downloads\os-rapid ; git fetch origin ; git checkout niket/bac
 ## Step 3 — Connect to GCP (each person, once)
 
 ```powershell
-gcloud auth login ; gcloud auth application-default login ; gcloud config set project slimy-497412
+gcloud auth login ; gcloud auth application-default login ; gcloud config set project orchestraos-498316
+gcloud auth application-default set-quota-project orchestraos-498316
 ```
+
+### Quick verify (30 seconds)
+
+```powershell
+gcloud config set project orchestraos-498316
+poetry run python -c "from google.cloud import pubsub_v1; c=pubsub_v1.PublisherClient(); print(list(c.list_topics(request={'project':'projects/orchestraos-498316'})))"
+```
+
+**Pass:** you see topics including `raw-spans` and `feature-vectors`. Or run `.\scripts\verify_gcp.ps1`. Full guide: [VERIFY_GCP.md](VERIFY_GCP.md).
 
 Secrets load from Secret Manager in prod via `shared/config.py`. Never commit `.env`.
 
@@ -117,13 +127,13 @@ EXECUTION MODE — set up OrchestraOS locally and connect to GCP. Do not change 
    - Copy .env.example to .env
    - Set REDIS_URL=redis://localhost:6379/0
    - Set PUBSUB_EMULATOR_HOST=localhost:8085
-   - Set GOOGLE_CLOUD_PROJECT=slimy-497412
+   - Set GOOGLE_CLOUD_PROJECT=orchestraos-498316
    - Do NOT commit .env
 
 3. GCP auth:
    gcloud auth login
    gcloud auth application-default login
-   gcloud config set project slimy-497412
+   gcloud config set project orchestraos-498316
 
 4. Verify:
    poetry run pytest tests/ -v

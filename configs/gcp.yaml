@@ -1,10 +1,14 @@
 # GCP deployment settings — shared hackathon project (all teammates).
-project_id: slimy-497412
+project_id: orchestraos-498316
 region: us-central1
 artifact_registry_repo: orchestraos
 
-# Live URLs (update after redeploy)
-live_dashboard_url: https://orchestraos-dashboard-397417416325.us-central1.run.app
+# Service accounts (see docs/CLOUD_SHELL_SETUP.md)
+deploy_service_account: orchestraos-sa
+service_account: orchestra-runtime
+
+# Live URLs (update after redeploy to orchestraos-498316)
+live_dashboard_url: null
 
 # Cloud Run service names
 services:
@@ -62,4 +66,3 @@ vpc_connector:
   name: orchestraos-connector
   range: 10.8.0.0/28
 
-service_account: orchestraos-runtime

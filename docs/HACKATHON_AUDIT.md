@@ -90,3 +90,4 @@ curl http://localhost:4318/health
 
 - [SUBMISSION.md](SUBMISSION.md) · [VIDEO_SCRIPT.md](VIDEO_SCRIPT.md) · [ARCHITECTURE.md](ARCHITECTURE.md)
 - [LIVE_RESOURCES.md](LIVE_RESOURCES.md) — keys, auth, GCP config, real-world test scenarios
+- [CLOUD_SHELL_SETUP.md](CLOUD_SHELL_SETUP.md) — `orchestraos-498316` SA bootstrap (no JSON keys)

@@ -21,7 +21,7 @@
 
 | Setting | Value |
 |---------|-------|
-| GCP Project ID | `slimy-497412` |
+| GCP Project ID | `orchestraos-498316` |
 | Region | `us-central1` |
 | GitHub | https://github.com/N-i-k-e-t/orchestraos |
 
@@ -82,7 +82,7 @@ GEMINI_API_KEY=[from table above]
 Optional when hitting real GCP:
 
 ```env
-GOOGLE_CLOUD_PROJECT=slimy-497412
+GOOGLE_CLOUD_PROJECT=orchestraos-498316
 ```
 
 ---
@@ -95,7 +95,7 @@ For deploy:
 
 ```powershell
 gcloud auth login
-gcloud config set project slimy-497412
+gcloud config set project orchestraos-498316
 ```
 
 No deploy keys in `.env`.
@@ -111,14 +111,14 @@ Same as team; add partner keys only when testing integrations.
 ## GCP IAM (Niket runs once)
 
 ```powershell
-gcloud projects add-iam-policy-binding slimy-497412 --member="user:RUTUJA_EMAIL@gmail.com" --role="roles/secretmanager.secretAccessor"
-gcloud projects add-iam-policy-binding slimy-497412 --member="user:AYUSH_EMAIL@gmail.com" --role="roles/secretmanager.secretAccessor"
+gcloud projects add-iam-policy-binding orchestraos-498316 --member="user:RUTUJA_EMAIL@gmail.com" --role="roles/secretmanager.secretAccessor"
+gcloud projects add-iam-policy-binding orchestraos-498316 --member="user:AYUSH_EMAIL@gmail.com" --role="roles/secretmanager.secretAccessor"
 ```
 
 Teammates verify:
 
 ```powershell
-gcloud secrets list --project=slimy-497412
+gcloud secrets list --project=orchestraos-498316
 ```
 
 If that works, they may **skip** pasting keys into `.env`.

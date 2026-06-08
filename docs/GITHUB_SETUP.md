@@ -99,7 +99,7 @@ Because code is public, **never commit**:
 | `.env` with real keys | `.env` local only (gitignored) |
 | API keys, MongoDB URI | GCP Secret Manager |
 | `service-account.json` | `gcloud auth` locally; SA in GCP only |
-| GCP project keys in README | Reference project ID only (`slimy-497412`) |
+| GCP project keys in README | Reference project ID only (`orchestraos-498316`) |
 
 Before making public, confirm:
 

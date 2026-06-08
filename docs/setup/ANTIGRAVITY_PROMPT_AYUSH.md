@@ -12,7 +12,7 @@ Arize, MongoDB, Elastic, Dynatrace, GitLab). Never hardcode secrets.
 
 I am Ayush. My ready-made branch already exists: ayush/dashboard
 Repo: https://github.com/N-i-k-e-t/orchestraos
-GCP project: slimy-497412
+GCP project: orchestraos-498316
 
 STEP 1 — Clone & checkout my branch
 - git clone https://github.com/N-i-k-e-t/orchestraos.git
@@ -29,19 +29,19 @@ STEP 3 — Local environment
 - Copy .env.example to .env
 - Set REDIS_URL=redis://localhost:6379/0
 - Set PUBSUB_EMULATOR_HOST=localhost:8085
-- Set GOOGLE_CLOUD_PROJECT=slimy-497412
+- Set GOOGLE_CLOUD_PROJECT=orchestraos-498316
 - Confirm .env is in .gitignore and is NOT staged for commit
 
 STEP 4 — Connect Antigravity to Google Cloud
 - gcloud auth login
 - gcloud auth application-default login
-- gcloud config set project slimy-497412
+- gcloud config set project orchestraos-498316
 - gcloud config list
 - gcloud run services list --region=us-central1
 
 STEP 5 — Verify Secret Manager + deploy access
 - gcloud secrets list
-- If deploy fails, ask Niket for Cloud Run Admin / appropriate IAM on slimy-497412
+- If deploy fails, ask Niket for Cloud Run Admin / appropriate IAM on orchestraos-498316
 
 STEP 6 — Verify locally (Cloud Run URL is currently broken — fix is my top task)
 - poetry run pytest tests/ -v
@@ -58,7 +58,7 @@ STEP 7 — Confirm my ownership areas (read only, do not refactor yet)
 - cloudbuild.yaml
 
 STEP 8 — Fix live dashboard (priority after onboarding)
-- gcloud config set project slimy-497412
+- gcloud config set project orchestraos-498316
 - Run: .\scripts\deploy_cloud_run.ps1  (Windows) or bash scripts/deploy_cloud_run.sh
 - Test: curl https://YOUR-URL/api/health → {"status":"ok",...}
 - Update configs/gcp.yaml live_dashboard_url and README
