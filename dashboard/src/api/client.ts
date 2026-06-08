@@ -79,6 +79,85 @@ export interface HealthAgents {
   updated_at: string;
 }
 
+export interface OpsNode {
+  id: string;
+  label: string;
+  layer: string;
+  status: string;
+  detail: string;
+  links: Array<{ label: string; url: string }>;
+}
+
+export interface OpsTopology {
+  nodes: OpsNode[];
+  edges: Array<{ from: string; to: string; label: string }>;
+  branches: Array<{ name: string; owner: string; role: string }>;
+  project_id: string;
+  region: string;
+  dashboard_url: string;
+  collector_url: string;
+  updated_at: string;
+}
+
+export interface OpsTask {
+  id: string;
+  title: string;
+  owner: string;
+  status: string;
+  priority: string;
+}
+
+export interface OpsTasks {
+  tasks: OpsTask[];
+  summary: { total: number; done: number; pending: number };
+  deadline: string;
+  updated_at: string;
+}
+
+export interface OpsDynamics {
+  pipeline: Array<{
+    stage: string;
+    service: string;
+    agents: string[];
+    status: string;
+    active_count: number;
+  }>;
+  agents_firing: string[];
+  active_agent_count: number;
+  sessions: HealthSession[];
+  incidents: HealthIncident[];
+  aggregate: { risk_score: number; loop_score: number; progress_score: number };
+  domains: Record<string, number>;
+  roster_total: number;
+  updated_at: string;
+}
+
+export interface OpsSecrets {
+  secrets: Array<{
+    id: string;
+    source: string;
+    consumers: string[];
+    status: string;
+    env_var: string;
+    note?: string;
+  }>;
+  service_accounts: { deploy: string; runtime: string };
+  updated_at: string;
+}
+
+export interface OpsSummary {
+  health: {
+    redis: string;
+    services_ok: number;
+    services_total: number;
+    active_agents: number;
+    roster_total: number;
+  };
+  tasks: { total: number; done: number; pending: number };
+  topology: { project: string; region: string };
+  updated_at: string;
+}
+
 async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init);
   if (!res.ok) throw new Error(`API ${path} failed: ${res.status}`);
@@ -92,4 +171,9 @@ export const api = {
   getMetrics: () => fetchJson<MetricsSummary>("/api/metrics"),
   getHealthLive: () => fetchJson<HealthLive>("/health/live"),
   getHealthAgents: () => fetchJson<HealthAgents>("/health/agents"),
+  getOpsSummary: () => fetchJson<OpsSummary>("/ops/summary"),
+  getOpsTopology: () => fetchJson<OpsTopology>("/ops/topology"),
+  getOpsDynamics: () => fetchJson<OpsDynamics>("/ops/dynamics"),
+  getOpsTasks: () => fetchJson<OpsTasks>("/ops/tasks"),
+  getOpsSecrets: () => fetchJson<OpsSecrets>("/ops/secrets"),
 };

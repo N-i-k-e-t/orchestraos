@@ -23,7 +23,9 @@ COPY learning/ learning/
 COPY tests/conftest.py tests/conftest.py
 COPY dashboard/server.py dashboard/server.py
 COPY dashboard/health_api.py dashboard/health_api.py
+COPY dashboard/ops_api.py dashboard/ops_api.py
 COPY dashboard/registry.py dashboard/registry.py
+COPY configs/gcp.yaml configs/gcp.yaml
 ENV PYTHONPATH=/app
 COPY --from=frontend /app/dashboard/dist dashboard/dist
 EXPOSE 8080

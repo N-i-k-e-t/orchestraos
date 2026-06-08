@@ -15,6 +15,13 @@ from agent_harness.metrics import cost_reduction, estimate_unprotected
 from agent_harness.protected_agent import ProtectedAgent
 from agent_harness.unprotected_agent import UnprotectedAgent
 from dashboard.health_api import agents_payload, get_live_store, live_payload
+from dashboard.ops_api import (
+    dynamics_payload,
+    ops_summary_payload,
+    secrets_map_payload,
+    tasks_payload,
+    topology_payload,
+)
 from shared.cloudrun import get_listen_port
 from tests.conftest import FakeRedisStore
 
@@ -131,6 +138,31 @@ async def health_agents() -> dict:
 @app.get("/health/live")
 async def health_live() -> dict:
     return live_payload()
+
+
+@app.get("/ops/summary")
+async def ops_summary() -> dict:
+    return ops_summary_payload()
+
+
+@app.get("/ops/topology")
+async def ops_topology() -> dict:
+    return topology_payload()
+
+
+@app.get("/ops/dynamics")
+async def ops_dynamics() -> dict:
+    return dynamics_payload()
+
+
+@app.get("/ops/tasks")
+async def ops_tasks() -> dict:
+    return tasks_payload()
+
+
+@app.get("/ops/secrets")
+async def ops_secrets() -> dict:
+    return secrets_map_payload()
 
 
 @app.get("/api/demo/compare")
