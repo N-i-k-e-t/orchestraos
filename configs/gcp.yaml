@@ -8,7 +8,7 @@ deploy_service_account: orchestraos-sa
 service_account: orchestra-runtime
 
 # Live URLs (update after redeploy to orchestraos-498316)
-live_dashboard_url: null
+live_dashboard_url: https://orchestraos-dashboard-ew3uwemnxq-uc.a.run.app
 
 # Cloud Run service names
 services:

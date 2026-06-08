@@ -12,5 +12,6 @@ COPY remediation/ remediation/
 COPY breaker/ breaker/
 COPY checkpoint/ checkpoint/
 COPY learning/ learning/
+COPY integrations/ integrations/
 
 CMD ["python", "-m", "remediation.main"]
