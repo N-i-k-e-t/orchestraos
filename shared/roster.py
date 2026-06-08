@@ -2,28 +2,37 @@
 
 from __future__ import annotations
 
+import logging
+
 from shared.agent_registry import AgentEntry, merge_registries
+
+logger = logging.getLogger(__name__)
+
+# Package names must match real top-level folders under /app (e.g. monitor_model, not monitor).
+_SERVICE_PACKAGES: tuple[tuple[str, str], ...] = (
+    ("collector", "collector"),
+    ("detectors", "detectors"),
+    ("monitor_model", "monitor"),
+    ("breaker", "breaker"),
+    ("remediation", "remediation"),
+    ("integrations", "partners"),
+    ("learning", "learning"),
+    ("agent_harness", "harness"),
+    ("dashboard", "dashboard"),
+)
+
+
+def _load_registry(package: str, label: str) -> list[AgentEntry]:
+    try:
+        mod = __import__(f"{package}.registry", fromlist=["AGENTS"])
+        return list(getattr(mod, "AGENTS", []))
+    except ModuleNotFoundError as exc:
+        logger.warning("[roster] skipping %s (%s): %s", label, package, exc)
+        return []
 
 
 def load_all_registries() -> list[AgentEntry]:
-    from agent_harness.registry import AGENTS as harness
-    from breaker.registry import AGENTS as breaker
-    from collector.registry import AGENTS as collector
-    from dashboard.registry import AGENTS as dashboard
-    from detectors.registry import AGENTS as detectors
-    from integrations.registry import AGENTS as partners
-    from learning.registry import AGENTS as learning
-    from monitor_model.registry import AGENTS as monitor
-    from remediation.registry import AGENTS as remediation
-
-    return merge_registries(
-        collector,
-        detectors,
-        monitor,
-        breaker,
-        remediation,
-        partners,
-        learning,
-        harness,
-        dashboard,
-    )
+    chunks: list[list[AgentEntry]] = [
+        _load_registry(package, label) for package, label in _SERVICE_PACKAGES
+    ]
+    return merge_registries(*chunks)

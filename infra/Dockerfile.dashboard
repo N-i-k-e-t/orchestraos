@@ -12,15 +12,19 @@ COPY pyproject.toml poetry.lock* ./
 RUN poetry install --no-interaction --no-ansi --no-root
 COPY shared/ shared/
 COPY agent_harness/ agent_harness/
+COPY collector/ collector/
 COPY detectors/ detectors/
 COPY monitor_model/ monitor_model/
 COPY breaker/ breaker/
 COPY checkpoint/ checkpoint/
 COPY remediation/ remediation/
+COPY integrations/ integrations/
 COPY learning/ learning/
 COPY tests/conftest.py tests/conftest.py
 COPY dashboard/server.py dashboard/server.py
 COPY dashboard/health_api.py dashboard/health_api.py
+COPY dashboard/registry.py dashboard/registry.py
+ENV PYTHONPATH=/app
 COPY --from=frontend /app/dashboard/dist dashboard/dist
 EXPOSE 8080
 CMD ["python", "-m", "dashboard.server"]
