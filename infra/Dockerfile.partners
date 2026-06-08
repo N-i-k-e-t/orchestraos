@@ -9,5 +9,6 @@ RUN poetry install --no-interaction --no-ansi --no-root
 
 COPY shared/ shared/
 COPY integrations/ integrations/
+COPY learning/ learning/
 
 CMD ["python", "-m", "integrations.main"]

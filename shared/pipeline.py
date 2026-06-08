@@ -12,28 +12,8 @@ from monitor_model.agent_builder import MonitorAgentBuilder
 from remediation.orchestrator import RemediationOrchestrator
 from shared.agent_runtime import AgentRuntime
 from shared.live_state import LiveStateStore
+from shared.pipeline_agents import DETECTOR_AGENTS, REMEDIATION_AGENTS
 from shared.schemas import BreakerEventSchema, SpanSchema
-
-
-DETECTOR_AGENTS = (
-    "LoopAgent",
-    "ProgressAgent",
-    "TokenAgent",
-    "LatencyAgent",
-    "ContextAgent",
-    "ErrorAgent",
-    "DetectorSwarm",
-    "FeatureFusion",
-)
-
-REMEDIATION_AGENTS = (
-    "RetryAgent",
-    "PromptRewriteAgent",
-    "RollbackAgent",
-    "FallbackToolAgent",
-    "HumanEscalationAgent",
-    "RemediationOrchestrator",
-)
 
 
 class PipelineRunner:

@@ -9,5 +9,6 @@ RUN poetry install --no-interaction --no-ansi --no-root
 
 COPY shared/ shared/
 COPY monitor_model/ monitor_model/
+COPY checkpoint/ checkpoint/
 
 CMD ["python", "-m", "monitor_model.main"]

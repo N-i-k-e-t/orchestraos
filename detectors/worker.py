@@ -15,7 +15,7 @@ from detectors.swarm import DetectorSwarm
 from shared.agent_runtime import AgentRuntime
 from shared.config import get_redis_url, get_settings
 from shared.live_state import LiveStateStore
-from shared.pipeline import DETECTOR_AGENTS
+from shared.pipeline_agents import DETECTOR_AGENTS
 from shared.pubsub import get_event_fabric
 from shared.schemas import SpanSchema
 

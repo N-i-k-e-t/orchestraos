@@ -9,5 +9,6 @@ RUN poetry install --no-interaction --no-ansi --no-root
 
 COPY shared/ shared/
 COPY detectors/ detectors/
+COPY checkpoint/ checkpoint/
 
 CMD ["python", "-m", "detectors.main"]
