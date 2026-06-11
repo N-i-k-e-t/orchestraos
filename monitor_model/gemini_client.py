@@ -15,6 +15,14 @@ logger = logging.getLogger(__name__)
 
 GeminiBackend = Literal["vertex", "api_key", "none"]
 
+# Vertex model fallbacks when the configured name is unavailable in a region/project.
+_VERTEX_MODEL_FALLBACKS = (
+    "gemini-2.0-flash",
+    "gemini-1.5-flash-002",
+    "gemini-1.5-flash",
+    "gemini-2.5-flash",
+)
+
 _CLASSIFY_PROMPT = """You are OrchestraOS RiskAgent. Classify agent session risk from detector features.
 
 Features (0.0=good, 1.0=bad unless noted):
@@ -62,6 +70,15 @@ class GeminiClient:
             return
         logger.info("No Gemini backend — RiskAgent uses deterministic fallback only")
 
+    def _vertex_model_candidates(self) -> list[str]:
+        seen: set[str] = set()
+        ordered: list[str] = []
+        for name in (self._model_name, *_VERTEX_MODEL_FALLBACKS):
+            if name not in seen:
+                seen.add(name)
+                ordered.append(name)
+        return ordered
+
     def _try_vertex(self) -> bool:
         """Vertex AI Gemini — required path for GCP / Agent Builder submissions."""
         project = os.getenv("GOOGLE_CLOUD_PROJECT", "")
@@ -75,12 +92,26 @@ class GeminiClient:
 
             location = os.getenv("VERTEX_AI_LOCATION", "us-central1")
             vertexai.init(project=project, location=location)
-            self._model = GenerativeModel(self._model_name)
-            self._gen_config = GenerationConfig(response_mime_type="application/json")
-            self._backend = "vertex"
-            self._available = True
-            logger.info("Gemini via Vertex AI project=%s location=%s", project, location)
-            return True
+            smoke = GenerationConfig(response_mime_type="application/json", max_output_tokens=16)
+            for model_name in self._vertex_model_candidates():
+                try:
+                    model = GenerativeModel(model_name)
+                    model.generate_content('{"status":"healthy"}', generation_config=smoke)
+                    self._model = model
+                    self._gen_config = GenerationConfig(response_mime_type="application/json")
+                    self._model_name = model_name
+                    self._backend = "vertex"
+                    self._available = True
+                    logger.info(
+                        "Gemini via Vertex AI project=%s location=%s model=%s",
+                        project,
+                        location,
+                        model_name,
+                    )
+                    return True
+                except Exception as exc:
+                    logger.warning("Vertex model %s unavailable: %s", model_name, exc)
+            return False
         except Exception as exc:
             logger.warning("Vertex AI Gemini init failed: %s", exc)
             return False
@@ -118,11 +149,23 @@ class GeminiClient:
             loop_detected=loop_detected,
             repeat_count=repeat_count,
         )
+        result = self._generate(prompt)
+        if result is not None:
+            return result
+
+        # Vertex model may init but fail at runtime — try API key once if configured.
+        if self._backend == "vertex" and get_gemini_api_key():
+            prior = self._backend
+            if self._try_api_key():
+                result = self._generate(prompt)
+                if result is not None:
+                    return result
+                self._backend = prior
+        return None
+
+    def _generate(self, prompt: str) -> dict[str, Any] | None:
         try:
-            if self._backend == "vertex":
-                response = self._model.generate_content(prompt, generation_config=self._gen_config)
-            else:
-                response = self._model.generate_content(prompt, generation_config=self._gen_config)
+            response = self._model.generate_content(prompt, generation_config=self._gen_config)
             text = response.text if hasattr(response, "text") else str(response)
             return self._parse_response(text)
         except Exception as exc:

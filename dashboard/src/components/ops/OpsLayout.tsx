@@ -7,8 +7,8 @@ export function OpsLayout() {
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-cyan-400">Separate ops view</p>
-            <h1 className="text-xl font-bold text-white">OrchestraOS Ops Center</h1>
-            <p className="text-sm text-slate-400">Agents · pipeline · GitHub → GCP · keys map</p>
+            <h1 className="text-xl font-bold text-white">OrbitAgent Ops Center</h1>
+            <p className="text-sm text-slate-400">O.R.B.I.T. · pipeline · GitHub → GCP · keys map</p>
           </div>
           <nav className="flex items-center gap-3">
             <a

@@ -13,8 +13,8 @@ export function Layout() {
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div>
-            <h1 className="text-xl font-bold text-slate-900">OrchestraOS</h1>
-            <p className="text-sm text-slate-400">Loop Sentinel · Multi-Agent Reliability OS</p>
+            <h1 className="text-xl font-bold text-slate-900">OrbitAgent</h1>
+            <p className="text-sm text-slate-400">Observe · Reason · Break · Intervene · Track</p>
           </div>
           <nav className="flex gap-2">
             <NavLink to="/" end className={linkClass}>

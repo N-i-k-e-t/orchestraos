@@ -38,14 +38,24 @@ class Settings:
         return bool(self.pubsub_emulator_host)
 
 
+def _is_valid_secret(value: str) -> bool:
+    """Reject empty values and setup_gcp placeholder strings."""
+    return bool(value) and value.strip().lower() != "placeholder"
+
+
 def _read_secret(secret_id: str, env_fallback: str) -> str:
     """
     Read a secret from Secret Manager when running on GCP.
     Falls back to environment variable for local development.
+
+    Resolution order:
+      1. Env var (e.g. GEMINI_API_KEY) if set and non-placeholder
+      2. Secret Manager ``projects/{GOOGLE_CLOUD_PROJECT}/secrets/{secret_id}/versions/latest``
+      3. Empty string
     """
     local_value = os.getenv(env_fallback, "")
-    if local_value:
-        return local_value
+    if _is_valid_secret(local_value):
+        return local_value.strip()
 
     project_id = os.getenv("GOOGLE_CLOUD_PROJECT", "")
     if not project_id or os.getenv("PUBSUB_EMULATOR_HOST"):
@@ -57,7 +67,8 @@ def _read_secret(secret_id: str, env_fallback: str) -> str:
         client = secretmanager.SecretManagerServiceClient()
         name = f"projects/{project_id}/secrets/{secret_id}/versions/latest"
         response = client.access_secret_version(request={"name": name})
-        return response.payload.data.decode("utf-8")
+        remote = response.payload.data.decode("utf-8").strip()
+        return remote if _is_valid_secret(remote) else ""
     except Exception:
         return ""
 

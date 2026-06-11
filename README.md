@@ -1,8 +1,12 @@
-# OrchestraOS Loop Sentinel
+# OrbitAgent
 
-**Every other platform tells you your agent failed. OrchestraOS makes sure it doesn't.**
+**Your agent is stuck in orbit. We break the loop before it breaks your budget.**
 
-A Multi-Agent Reliability OS for the [Google Cloud Rapid Agent Hackathon](https://cloud.google.com/events/rapid-agent-hackathon). OrchestraOS observes, protects, and auto-recovers **external** AI agents (AutoGPT, CrewAI, LangGraph, MCP, custom) — agents never run inside OrchestraOS; we only watch and intervene.
+**O.R.B.I.T.** — **O**bserve · **R**eason · **B**reak · **I**ntervene · **T**rack
+
+A multi-agent reliability OS for the [Google Cloud Rapid Agent Hackathon](https://cloud.google.com/events/rapid-agent-hackathon). OrbitAgent watches **external** AI agents (AutoGPT, CrewAI, LangGraph, MCP, custom) — detectors **observe**, Gemini **reasons**, the breaker **breaks**, remediation **intervenes**, and OTel/Arize **tracks**. Agents never run inside OrbitAgent; we only watch and stop loops before budgets burn.
+
+> Repo codename: `orchestraos` (GCP services retain `orchestraos-*` names).
 
 | Track | Integration |
 |-------|-------------|
@@ -14,7 +18,7 @@ A Multi-Agent Reliability OS for the [Google Cloud Rapid Agent Hackathon](https:
 
 ## The money shot
 
-| | Unprotected | Protected (OrchestraOS) |
+| | Unprotected | Protected (OrbitAgent) |
 |---|-------------|-------------------------|
 | **Calls** | 400 | 5 |
 | **Duration** | 20 min | 47 sec |
@@ -22,7 +26,7 @@ A Multi-Agent Reliability OS for the [Google Cloud Rapid Agent Hackathon](https:
 | **Outcome** | FAILURE | RECOVERED |
 | **Savings** | — | **99.1% cost reduction** |
 
-Live scenario: AutoGPT infinite loop — repeated `web_search` with identical params. OrchestraOS detects the loop on call 3, trips the circuit breaker at `risk_score > 0.8`, and remediates within 5 calls.
+Live scenario: AutoGPT infinite loop — repeated `web_search` with identical params. OrbitAgent **observes** the loop on call 3, **reasons** with Gemini, **breaks** at `risk_score > 0.8`, **intervenes** via remediation, and **tracks** the incident in Phoenix — all within 5 calls.
 
 ---
 

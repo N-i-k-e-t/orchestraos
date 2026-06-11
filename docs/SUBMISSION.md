@@ -2,12 +2,15 @@
 
 Google Cloud Rapid Agent Hackathon — OrchestraOS Loop Sentinel
 
+**Devpost copy/paste:** [DEVPOST_SUBMISSION.md](DEVPOST_SUBMISSION.md) — all form fields filled in.
+
 ## Project metadata
 
 | Field | Value |
 |-------|-------|
-| **Project name** | OrchestraOS Loop Sentinel |
-| **Tagline** | Every other platform tells you your agent failed. OrchestraOS makes sure it doesn't. |
+| **Project name** | OrbitAgent |
+| **Tagline** | Your agent is stuck in orbit. We break the loop before it breaks your budget. |
+| **Framework** | **O.R.B.I.T.** — Observe · Reason · Break · Intervene · Track |
 | **Primary track** | Arize (Phoenix OTLP + MCP) |
 | **Secondary tracks** | Dynatrace, Elastic, MongoDB Atlas, GitLab |
 | **License** | MIT ([LICENSE](../LICENSE)) |
@@ -30,10 +33,11 @@ Google Cloud Rapid Agent Hackathon — OrchestraOS Loop Sentinel
 ### Fill in before submitting
 
 ```markdown
-Live demo:    (deploy to orchestraos-498316 — TBD)
+Live demo:    https://orchestraos-dashboard-ew3uwemnxq-uc.a.run.app
+Ops Center:   https://orchestraos-dashboard-ew3uwemnxq-uc.a.run.app/ops
 GCP project:  orchestraos-498316
-Collector:    https://orchestraos-collector-XXXX.run.app/v1/traces  (deploy after Memorystore/VPC)
-Video:        https://youtube.com/watch?v=XXXX
+Collector:    https://orchestraos-collector-ew3uwemnxq-uc.a.run.app/v1/traces
+Video:        [VIDEO_URL]
 GitHub:       https://github.com/N-i-k-e-t/orchestraos
 ```
 
